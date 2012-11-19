@@ -1,0 +1,24 @@
+/**
+ * =====================================
+ * IsError ( theErrorObject )
+ *
+ * RETURNS:
+ *		(bool) True if the error object contains an error
+ *
+ * PARAMETERS:
+ *		theErrorObject = (string) output of the function ErrorObject
+ *
+ * EXAMPLES:
+ *		IsError ( $errorObject )
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: #Get
+ *
+ * HISTORY:
+ *		CREATED on 2012-NOV-18 Daniel Smith dansmith65@gmail.com
+ * =====================================
+ */
+
+GetAsBoolean (
+	#Get ( theErrorObject ; "isError" )
+)
