@@ -1,21 +1,22 @@
 /**
  * =====================================
- * IsError (  )
+ * ErrorGetFmp (  )
  *
  * RETURNS:
- *		(bool) True if $error contains an error of any type
+ *		(num) errorCode if $error contains an error of type fmp, otherwise null
  *
  * DEPENDENCIES:
  *		Custom Functions: #Get
  *
  * NOTES:
- *		Use after calling ErrorSaveFmp, or other ErrorSave* custom functions
+ *		Use after calling ErrorSaveFmp custom function
  *
  * HISTORY:
  *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com
  * =====================================
  */
 
-GetAsBoolean (
+If (
+	#Get ( $error ; "errorType" ) = "fmp" ;
 	#Get ( $error ; "errorCode" )
 )

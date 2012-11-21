@@ -1,21 +1,22 @@
 /**
  * =====================================
- * IsError (  )
+ * ErrorGetApp (  )
  *
  * RETURNS:
- *		(bool) True if $error contains an error of any type
+ *		(num) errorCode if $error contains an error of type app, otherwise null
  *
  * DEPENDENCIES:
  *		Custom Functions: #Get
  *
  * NOTES:
- *		Use after calling ErrorSaveFmp, or other ErrorSave* custom functions
+ *		Use after calling ErrorSaveApp custom function
  *
  * HISTORY:
  *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com
  * =====================================
  */
 
-GetAsBoolean (
+If (
+	#Get ( $error ; "errorType" ) = "app" ;
 	#Get ( $error ; "errorCode" )
 )
