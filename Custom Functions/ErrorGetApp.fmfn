@@ -3,13 +3,14 @@
  * ErrorGetApp ( theErrorData )
  *
  * RETURNS:
- *		(num) errorCode if theErrorData contains an error of type app, otherwise null
+ *		(num) errorCode if theErrorData contains an error of type app,
+ *		otherwise null
+ *		
+ * PARAMETERS:
+ *		theErrorData = (string) output of ErrorSaveApp custom function
  *
  * DEPENDENCIES:
  *		Custom Functions: #Get
- *
- * NOTES:
- *		Use after calling ErrorSaveApp custom function
  *
  * HISTORY:
  *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
