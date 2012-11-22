@@ -1,9 +1,9 @@
 /**
  * =====================================
- * ErrorGetFmp (  )
+ * ErrorGetFmp ( theErrorData )
  *
  * RETURNS:
- *		(num) errorCode if $error contains an error of type fmp, otherwise null
+ *		(num) errorCode if theErrorData contains an error of type fmp, otherwise null
  *
  * DEPENDENCIES:
  *		Custom Functions: #Get
@@ -12,11 +12,13 @@
  *		Use after calling ErrorSaveFmp custom function
  *
  * HISTORY:
+ *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
+ *			- don't access $error variable directly
  *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com
  * =====================================
  */
 
 If (
-	#Get ( $error ; "errorType" ) = "fmp" ;
-	#Get ( $error ; "errorCode" )
+	#Get ( theErrorData ; "errorType" ) = "fmp" ;
+	#Get ( theErrorData ; "errorCode" )
 )

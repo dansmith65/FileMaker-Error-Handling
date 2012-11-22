@@ -3,12 +3,12 @@
  * ErrorSaveApp ( theErrorCode )
  *
  * PURPOSE:
- *		Save theErrorCode to a Let format dictionary stored in a local variable
- *		so it can be retrieved later. If the error is not 0, also store
- *		information about the current environment in the local variable.
+ *		Return theErrorCode in a Let format dictionary so it can
+ *		be retrieved later. If the error is not 0, also return
+ *		information about the current environment.
  *
  * RETURNS:
- *		theErrorCode
+ *		dictonary containing data about the specified error code and the current environment
  *		
  * PARAMETERS:
  *		theErrorCode = (number) the code for the error
@@ -16,10 +16,9 @@
  * DEPENDENCIES:
  *		Custom Functions: #
  *
- * NOTES:
- *		local variable name used: $error
- *
  * HISTORY:
+ *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
+ *			- don't access $error variable directly
  *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com
  *		INSPIRED by ErrorString and ErrorData by matt@filemakermagazine.com
  *			https://github.com/filemakerstandards/fmpstandards/tree/master/Functions
@@ -27,7 +26,7 @@
  */
 
 Let ( [
-	$error =
+	theErrorData =
 		# ( "errorType" ; "app" )
 		& # ( "errorCode" ; theErrorCode )
 
@@ -70,5 +69,5 @@ Let ( [
 				& # ( "UserCount" ; Get ( UserCount ) )
 		)
 ] ;
-	theErrorCode
+	theErrorData
 ) // end of Let

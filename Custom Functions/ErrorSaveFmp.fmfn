@@ -3,23 +3,21 @@
  * ErrorSaveFmp (  )
  *
  * PURPOSE:
- *		Save the value of Get ( LastError ) to a Let format dictionary stored
- *		in a local variable so it can be retrieved later. If the error is not
- *		0, also store information about the current environment in the local
- *		variable.
+ *		Return Get ( LastError ) in a Let format dictionary
+ *		so it can be retrieved later. If the error is not 0,
+ *		also return information about the current environment.
  *
  * RETURNS:
- *		(num) value of Get ( LastError )
+ *		dictonary containing data about the last error encounted, and the current environment
  *		
  * PARAMETERS: none
  *
  * DEPENDENCIES:
  *		Custom Functions: #
  *
- * NOTES:
- *		local variable name used: $error
- *
  * HISTORY:
+ *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
+ *			- don't access $error variable directly
  *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com
  *		INSPIRED by ErrorString and ErrorData by matt@filemakermagazine.com
  *			https://github.com/filemakerstandards/fmpstandards/tree/master/Functions
@@ -31,7 +29,7 @@
 
 Let ( [
 	theErrorCode = Get ( LastError ) ;
-	$error =
+	theErrorData =
 		# ( "errorType" ; "fmp" )
 		& # ( "errorCode" ; theErrorCode )
 
@@ -317,5 +315,5 @@ Let ( [
 				& # ( "UserCount" ; Get ( UserCount ) )
 		)
 ] ;
-	theErrorCode
+	theErrorData
 ) // end of Let

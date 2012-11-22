@@ -16,6 +16,8 @@
  *		your solution.
  *
  * HISTORY:
+ *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
+ *			- don't access $error variable directly
  *		CREATED on 2012-NOV-21 Daniel Smith dansmith65@gmail.com
  *		INSPIRED by ErrorData by matt@filemakermagazine.com
  *			https://github.com/filemakerstandards/fmpstandards/tree/master/Functions
@@ -99,6 +101,6 @@ Let ( [
 	//   contain more accurate information than what was set above, which is
 	//   why it is added a the end - so any duplicate values will default to
 	//   the value saved in this $error variable
-	& $error
+	//& $error
 	
 ) // end of Let

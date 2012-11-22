@@ -1,9 +1,9 @@
 /**
  * =====================================
- * IsError (  )
+ * IsError ( theErrorData )
  *
  * RETURNS:
- *		(bool) True if $error contains an error of any type
+ *		(bool) True if theErrorData contains an error of any type
  *
  * DEPENDENCIES:
  *		Custom Functions: #Get
@@ -12,10 +12,12 @@
  *		Use after calling ErrorSaveFmp, or other ErrorSave* custom functions
  *
  * HISTORY:
+ *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
+ *			- don't access $error variable directly
  *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com
  * =====================================
  */
 
 GetAsBoolean (
-	#Get ( $error ; "errorCode" )
+	#Get ( theErrorData ; "errorCode" )
 )
