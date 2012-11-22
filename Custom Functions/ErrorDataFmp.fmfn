@@ -1,6 +1,6 @@
 /**
  * =====================================
- * ErrorSaveFmp (  )
+ * ErrorDataFmp (  )
  *
  * RETURNS:
  *		Let format dictionary containing the value of Get ( LastError ), error
@@ -12,6 +12,8 @@
  *		Custom Functions: #
  *
  * HISTORY:
+ *		MODIFIED on 2012-NOV-22 by Daniel Smith dansmith65@gmail.com
+ *			- rename to: ErrorDataFmp
  *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
  *			- don't access $error variable directly
  *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com

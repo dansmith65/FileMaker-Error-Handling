@@ -94,13 +94,6 @@ Let ( [
 				not isempty( Get ( ActiveLayoutObjectName ) );
 				# ( "ActiveLayoutObjectName" ; Get ( ActiveLayoutObjectName ) )
 			)
-			& # ( "LastODBCError" ; Get ( LastODBCError ) )
 	)
-	
-	// add data from $error variable, which is set by custom functions, and may
-	//   contain more accurate information than what was set above, which is
-	//   why it is added a the end - so any duplicate values will default to
-	//   the value saved in this $error variable
-	//& $error
 	
 ) // end of Let

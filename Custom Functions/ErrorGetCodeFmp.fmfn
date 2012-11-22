@@ -1,18 +1,20 @@
 /**
  * =====================================
- * ErrorGetApp ( theErrorData )
+ * ErrorGetCodeFmp ( theErrorData )
  *
  * RETURNS:
- *		(num) errorCode if theErrorData contains an error of type app,
+ *		(num) errorCode if theErrorData contains an error of type fmp,
  *		otherwise null
  *		
  * PARAMETERS:
- *		theErrorData = (string) output of ErrorSaveApp custom function
+ *		theErrorData = (string) output of ErrorSaveFmp custom function
  *
  * DEPENDENCIES:
  *		Custom Functions: #Get
  *
  * HISTORY:
+ *		MODIFIED on 2012-NOV-22 by Daniel Smith dansmith65@gmail.com
+ *			- rename to: ErrorGetCodeFmp
  *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
  *			- don't access $error variable directly
  *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com
@@ -20,6 +22,6 @@
  */
 
 If (
-	#Get ( theErrorData ; "errorType" ) = "app" ;
+	#Get ( theErrorData ; "errorType" ) = "fmp" ;
 	#Get ( theErrorData ; "errorCode" )
 )
