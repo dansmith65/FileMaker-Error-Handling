@@ -4,7 +4,7 @@
  *
  * RETURNS:
  *		Let format dictionary containing theErrorCode, error meta data, and
- *		additional environmental data in a Let format dictionary.
+ *		additional environmental data.
  *
  * PARAMETERS:
  *		theErrorCode = (number) the code for the error

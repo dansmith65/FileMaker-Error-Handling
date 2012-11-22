@@ -4,7 +4,7 @@
  *
  * RETURNS:
  *		Let format dictionary containing the value of Get ( LastError ), error
- *		meta data, and additional environmental data in a Let format dictionary.
+ *		meta data, and additional environmental data.
  *
  * PARAMETERS: none
  *
