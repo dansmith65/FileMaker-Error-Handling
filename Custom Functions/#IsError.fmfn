@@ -1,0 +1,26 @@
+/**
+ * =====================================
+ * #IsError ( theErrorData )
+ *
+ * RETURNS:
+ *		(bool) True if theErrorData contains an error of any type
+ *
+ * PARAMETERS:
+ *		theErrorData = (let notation) output of #Error custom function
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: #Get
+ *
+ * HISTORY:
+ *		MODIFIED on 2013-OCT-11 by Daniel Smith dansmith65@gmail.com
+ *			- renamed from IsError to #IsError
+ *			- update documentation in script header
+ *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
+ *			- don't access $error variable directly
+ *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com
+ * =====================================
+ */
+
+GetAsBoolean (
+	#Get ( theErrorData ; "errorCode" )
+)

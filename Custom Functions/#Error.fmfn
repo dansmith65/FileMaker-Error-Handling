@@ -1,0 +1,48 @@
+/**
+ * =====================================
+ * #Error ( theErrorType ; theErrorCode ; theErrorDescription ; theErrorInfo )
+ *
+ * RETURNS:
+ *		Let format dictionary containing error meta data, and additional
+ *		environmental data.
+ *
+ * PARAMETERS:
+ *		theErrorType = (text) namespace the error code belongs to
+ *			(e.g., "fmp", "app", "Application", "ScriptMaster Plugin", etc.)
+ *		theErrorCode = (number) code for the error
+ *		theErrorDescription = (text) description of the error
+ *		theErrorInfo = (text, optional) some text describing the particular
+ *			instance of this error.
+ *			(e.g., "create new invoice record")
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: #
+ *
+ * HISTORY:
+ *		CREATED on 2013-OCT-11 Daniel Smith dansmith65@gmail.com
+ *			- based on comment by Todd Geist: http://filemakerstandards.org/pages/viewpage.action?pageId=557462&focusedCommentId=8749061#comment-8749061
+ * =====================================
+ */
+
+# ( "errorType" ; theErrorType )
+& # ( "errorCode" ; theErrorCode )
+& # ( "errorDescription" ; theErrorDescription )
+& If ( not IsEmpty ( theErrorInfo ) and GetAsBoolean ( theErrorCode ) ;
+	# ( "errorInfo" ; theErrorInfo )
+)
+
+
+// add additional info about the current environment to the ErrorObject
+// these values should be adjusted as needed for the solution
+& If (
+	theErrorCode ≠ 0 ;
+	""
+		& # ( "AllowAbortState" ; Get ( AllowAbortState ) )
+		& # ( "CurrentHostTimestamp" ; Get ( CurrentHostTimeStamp ) )
+		& # ( "ErrorCaptureState" ; Get ( ErrorCaptureState ) )
+		& # ( "LastODBCError" ; Get ( LastODBCError ) )
+		& # ( "ScriptName" ; Get ( ScriptName ) )
+		& # ( "ScriptParameter" ; Get ( ScriptParameter ) )
+		& # ( "ScriptResult" ; Get ( ScriptResult ) )
+		& # ( "UserCount" ; Get ( UserCount ) )
+)
