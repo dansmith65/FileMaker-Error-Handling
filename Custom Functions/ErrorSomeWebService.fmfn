@@ -1,0 +1,68 @@
+/**
+ * =====================================
+ * ErrorSomeWebService ( theXmlResult ; theErrorInfo )
+ *
+ * RETURNS:
+ *		Let format dictionary containing an error code, error meta data, and
+ *		additional environmental data.
+ *
+ * PARAMETERS:
+ *		theXmlResult = (text) xml returned by web service
+ *		theErrorInfo = (text, optional) some text describing the particular
+ *			instance of this error.
+ *			(e.g., "create new invoice record")
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: #, #Error
+ *
+ * HISTORY:
+ *		CREATED on 2013-NOV-14 Daniel Smith dansmith65@gmail.com
+ * =====================================
+ */
+
+Let ( [
+	// extract faultcode from SOAP error, even if it contains a namespace
+	// will fail if the element contains attributes
+	~start = Position ( theXmlResult ; "faultcode>" ; 1 ; 1 ) ;
+	~start = Position ( theXmlResult ; ">" ; ~start  ; 1 ) + 1 ;
+	~end = Position ( theXmlResult ; "faultcode>" ; ~start ; 1 ) ;
+	~end = Position ( theXmlResult ; "</" ; ~end ; -1 ) ;
+	~faultcode = Middle ( theXmlResult  ; ~start ; ~end - ~start ) ;
+	
+	// extract faultstring from SOAP error, even if it contains a namespace
+	// will fail if the element contains attributes
+	~start = Position ( theXmlResult ; "faultstring>" ; 1 ; 1 ) ;
+	~start = Position ( theXmlResult ; ">" ; ~start  ; 1 ) + 1 ;
+	~end = Position ( theXmlResult ; "faultstring>" ; ~start ; 1 ) ;
+	~end = Position ( theXmlResult ; "</" ; ~end ; -1 ) ;
+	~faultstring = Middle ( theXmlResult  ; ~start ; ~end - ~start ) ;
+	
+	~theErrorCode =
+		Case (
+		// no error
+			IsEmpty ( ~faultcode ) and IsEmpty ( ~faultstring ) ;
+			0 ;
+		// map known responses to numeric coded values
+//			~faultcode = "some known response" ;
+//			1 ;
+		// else, use "unknown" code
+			-1
+		)
+	;
+	~errorDescription =
+		Case (
+			~theErrorCode = 0 ;
+			"no error" ;
+		// modify/customize the error description on any error code's you'd like
+//			1 ; "some description that is more usefull to you/users than faultstring" ;
+		// else
+			~faultstring
+		)
+] ;
+	Error ( "SomeWebService" ; ~theErrorCode ; ~errorDescription ; theErrorInfo )
+	& If ( ~theErrorCode ;
+		# ( "xmlResult" ; theXmlResult )
+		& # ( "faultcode" ; faultcode )
+		& # ( "faultstring" ; faultstring )
+	)
+)
