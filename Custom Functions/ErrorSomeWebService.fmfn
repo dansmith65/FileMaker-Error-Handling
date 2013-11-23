@@ -3,20 +3,26 @@
  * ErrorSomeWebService ( theXmlResult ; theErrorInfo )
  *
  * RETURNS:
- *		Let format dictionary containing an error code, error meta data, and
- *		additional environmental data.
+ *		Let Notation containing information about a SOAP error contained in
+ *		theXmlResult and information about the current environment.
  *
  * PARAMETERS:
  *		theXmlResult = (text) xml returned by web service
  *		theErrorInfo = (text, optional) some text describing the particular
- *			instance of this error.
+ *			instance of this error. This should help a developer locate where
+ *			in a script the error occured.
  *			(e.g., "create new invoice record")
  *
  * DEPENDENCIES:
- *		Custom Functions: #, #Error
+ *		Custom Functions: #, Error
  *
  * HISTORY:
+ *		MODIFIED on 2013-NOV-22 by Daniel Smith dansmith65@gmail.com
+ *			- update documentation
  *		CREATED on 2013-NOV-14 Daniel Smith dansmith65@gmail.com
+ *
+ * REFERENCES:
+ *		http://filemakerstandards.org/x/AoA-/
  * =====================================
  */
 
