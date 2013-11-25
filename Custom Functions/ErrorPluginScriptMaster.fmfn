@@ -15,8 +15,13 @@
  *
  * DEPENDENCIES:
  *		Custom Functions: #, Error
+ *		Plugin: ScriptMaster
  *
  * HISTORY:
+ *		MODIFIED on 2013-NOV-25 by Daniel Smith dansmith65@gmail.com
+ *			- add "Plugin: " to the error type
+ *		MODIFIED on 2013-NOV-24 by Daniel Smith dansmith65@gmail.com
+ *			- add SMVersion to output
  *		MODIFIED on 2013-NOV-22 by Daniel Smith dansmith65@gmail.com
  *			- renamed to ErrorPluginScriptMaster
  *			- return error if module or plugin is not installed
@@ -63,12 +68,13 @@ Let ( [
 			SMLastError
 		)
 ] ;
-	Error ( "ScriptMaster" ; ~theErrorCode ; ~errorDescription ; theErrorInfo )
+	Error ( "Plugin: ScriptMaster" ; ~theErrorCode ; ~errorDescription ; theErrorInfo )
 	& If ( ~isError ;
 		# ( "plugInResult" ; thePlugInResult )
 		& # ( "SMLastError" ; SMLastError )
 		& # ( "SMLastStackTrace" ; SMLastStackTrace )
 		& # ( "SMGetRegisteredModules" ; SMGetRegisteredModules )
 		& # ( "SMGetLoadedJars" ; SMGetLoadedJars )
+		& # ( "SMVersion" ; SMVersion )
 	)
 )
