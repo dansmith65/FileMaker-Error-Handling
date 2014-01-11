@@ -1,0 +1,39 @@
+/**
+ * =====================================
+ * ErrorPluginOoScriptMaster ( thePlugInResult ; theErrorInfo )
+ *
+ * RETURNS:
+ *		Let Notation containing information about the last ooScriptMaster
+ *		error and the environment it occurred in.
+ *
+ * PARAMETERS:
+ *		thePlugInResult = (text, optional) result of the plugin call
+ *		theErrorInfo = (text, optional) some text describing the particular
+ *			instance of this error. This should help a developer locate where
+ *			in a script the error occured.
+ *			(e.g., "create new invoice record")
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: #, Error
+ *		Plugin: ooScriptMaster
+ *
+ * HISTORY:
+ *		CREATED on 2013-DEC-02 Daniel Smith dansmith65@gmail.com
+ *
+ * REFERENCES:
+ *		http://filemakerstandards.org/x/AoA-/
+ * =====================================
+ */
+
+Let ( [
+	~oosm_LastError = oosm_LastError ; // value of oosm_LastError is lost after calling any other plug-in function
+	~theErrorCode = oosm_LastErrorNumber ;
+	~errorDescription = oosm_LastErrorShortText
+] ;
+	Error ( "Plugin: ooScriptMaster" ; ~theErrorCode ; ~errorDescription ; theErrorInfo )
+	& If ( ~theErrorCode ;
+		# ( "plugInResult" ; thePlugInResult )
+		& # ( "oosm_LastError" ; oosm_LastError )
+		& # ( "oosm_LastErrorDebug" ; oosm_LastErrorDebug )
+	)
+)
