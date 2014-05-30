@@ -1,0 +1,63 @@
+/**
+ * =====================================
+ * ErrorPluginBaseElements ( thePlugInResult ; theErrorInfo )
+ *
+ * RETURNS:
+ *		Let Notation containing information about the last PlugIn
+ *		error and the environment it occurred in.
+ *
+ * PARAMETERS:
+ *		thePlugInResult = (text) result of the PlugIn call
+ *		theErrorInfo = (text, optional) some text describing the particular
+ *			instance of this error. This should help a developer locate where
+ *			in a script the error occured.
+ *			(e.g., "create new invoice record")
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: #, Error
+ *		Plugin: BaseElements
+ *
+ * HISTORY:
+ *		CREATED on 2014-01-22 Daniel Smith dansmith65@gmail.com
+ *
+ * REFERENCES:
+ *		http://filemakerstandards.org/x/AoA-/
+ * =====================================
+ */
+
+Let ( [
+	~isError =
+		thePlugInResult = "?"
+		or BE_GetLastError ≠ 0
+	;
+	~theErrorCode =
+		Case (
+		// no error
+			not ~isError ;
+			0 ;
+		// plug-in not installed
+			BE_GetLastError = "?" ;
+			10000 ;
+		// map known responses to numeric coded values
+//			BE_GetLastError = "some known response" ;
+//			1 ;
+		// else, use "unknown" code
+			-1
+		)
+	;
+	~errorDescription =
+		Case (
+			~theErrorCode = -1 ;		"Unknown error" ;
+			~theErrorCode = 0 ;		"No error" ;
+			~theErrorCode = 10000 ;		"BaseElements plug-in is not installed" ;
+		// else
+			BE_GetLastError
+		)
+] ;
+	Error ( "Plugin: BaseElements" ; ~theErrorCode ; ~errorDescription ; theErrorInfo )
+	& If ( ~isError ;
+		# ( "plugInResult" ; thePlugInResult )
+		& # ( "BE_GetLastError" ; BE_GetLastError )
+		& # ( "BE_GetLastDDLError" ; BE_GetLastDDLError )
+	)
+)
