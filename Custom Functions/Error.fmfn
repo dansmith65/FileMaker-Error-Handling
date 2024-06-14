@@ -3,7 +3,7 @@
  * Error ( theErrorType ; theErrorCode ; theErrorDescription ; theErrorInfo )
  *
  * RETURNS:
- *		Let Notation containing information about the error and the environment
+ *		JSON containing information about the error and the environment
  *		it occurred in.
  *
  * PARAMETERS:
@@ -32,37 +32,47 @@
  *
  *
  * HISTORY:
+ *		MODIFIED on 2020-APR-25 by Daniel Smith dan@filemaker.consulting
+ *			- encode parameter and result as object, if it's valid json
+ *		MODIFIED on 2018-JUN-01 by Daniel Smith dan@filemaker.consulting
+ *			- convert to JSON result
+ *		MODIFIED on 2015-JAN-22 by Daniel Smith dansmith65@gmail.com
+ *			- only encode errorCode if no error
+ *		MODIFIED on 2014-JUL-22 by Daniel Smith dansmith65@gmail.com
+ *			- add $~script.section
+ *			- manually encode common values instead of using # ( name ; value )
+ *			  custom function, for performance
  *		MODIFIED on 2013-NOV-22 by Daniel Smith dansmith65@gmail.com
  *			- change name to Error, update documentation
  *		CREATED on 2013-OCT-11 by Daniel Smith dansmith65@gmail.com
  *
  * REFERENCES:
- *		http://filemakerstandards.org/x/AoA-/
  *		https://github.com/dansmith65/FileMaker-Error-Handling
  * =====================================
  */
 
-// information about the error
-// these should NOT be modified, they should be consistent from one database to the next
-# ( "errorType" ; theErrorType )
-& # ( "errorCode" ; theErrorCode )
-& # ( "errorDescription" ; theErrorDescription )
-& If ( not IsEmpty ( theErrorInfo ) and GetAsBoolean ( theErrorCode ) ;
-	# ( "errorInfo" ; theErrorInfo )
-)
-
-
-// information about the environment
-// these values should be adjusted as needed for the database
-& If (
-	GetAsBoolean ( theErrorCode ) ;
-	""
-		& # ( "AllowAbortState" ; Get ( AllowAbortState ) )
-		& # ( "CurrentHostTimestamp" ; Get ( CurrentHostTimeStamp ) )
-		& # ( "ErrorCaptureState" ; Get ( ErrorCaptureState ) )
-		& # ( "LastODBCError" ; Get ( LastODBCError ) )
-		& # ( "ScriptName" ; Get ( ScriptName ) )
-		& # ( "ScriptParameter" ; Get ( ScriptParameter ) )
-		& # ( "ScriptResult" ; Get ( ScriptResult ) )
-		& # ( "UserCount" ; Get ( UserCount ) )
+If ( theErrorCode ;
+	JSONSetElement ( "{}" ;
+		// information about the error
+		// these should NOT be modified, they should be consistent from one database to the next
+		[ "errorCode" ; theErrorCode ; JSONNumber ] ;
+		[ "errorType" ; theErrorType ; JSONString ] ;
+		[ "errorDescription" ; theErrorDescription ; JSONString ] ;
+		[ "errorInfo" ; theErrorInfo ; JSONString ] ;
+		
+		// information about the environment
+		// these values should be adjusted as needed for the database
+		[ "ScriptName" ; Get ( ScriptName ) ; JSONString ] ;
+		[ "ScriptParameter" ; Get ( ScriptParameter ) ;
+			If ( Left ( JSONFormatElements ( Get ( ScriptParameter ) ) ; 1 ) ≠ "?" ; JSONObject ; JSONString )
+		] ;
+		[ "ScriptResult" ; Get ( ScriptResult ) ;
+			If ( Left ( JSONFormatElements ( Get ( ScriptResult ) ) ; 1 ) ≠ "?" ; JSONObject ; JSONString )
+		] ;
+		
+		[ "~script_section" ; $~script.section ; JSONString ]
+	) ;
+	
+	/* else: lightweight response when no error */
+	"{\"errorCode\":0}"
 )

@@ -1,5 +1,5 @@
-## Let Notation Based Custom Functions
+## JSON Based Custom Functions
 
-This is a legacy set of custom functions used for error handling in Claris FileMaker. While I wouldn't recommend beginning a new project using these functions, it's perfectly ok to continue using this set if they were used more than a few times in your project. It is a solid/proven concept that will continue to work for many years.
+This is a legacy set of custom functions used for error handling in Claris FileMaker. This is a potential upgrade path if you've used the legacy Let Notation functions before, but want to switch to JSON. I still wouldn't recommend beginning a new project using these functions, but for reduced friction when migrating from Let Notation, they might be worth considering.
 
 That said, check out the master branch of this repository for the currently reccomended functions for new work.
