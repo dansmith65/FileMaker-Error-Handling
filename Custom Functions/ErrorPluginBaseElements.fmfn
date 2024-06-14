@@ -18,7 +18,10 @@
  *		Plugin: BaseElements
  *
  * HISTORY:
- *		CREATED on 2014-01-22 Daniel Smith dansmith65@gmail.com
+ *		MODIFIED on 2014-05-29 by Daniel Smith dansmith65@gmail.com
+ *			- use BE_GetLastError as code, if it's numeric
+ *			- fix test for plugin not installed
+ *		CREATED on 2014-01-22 by Daniel Smith dansmith65@gmail.com
  *
  * REFERENCES:
  *		http://filemakerstandards.org/x/AoA-/
@@ -26,21 +29,22 @@
  */
 
 Let ( [
+	~pluginInternalErrorCode = BE_GetLastError ;
 	~isError =
 		thePlugInResult = "?"
-		or BE_GetLastError ≠ 0
+		or ~pluginInternalErrorCode ≠ 0
 	;
 	~theErrorCode =
 		Case (
 		// no error
 			not ~isError ;
 			0 ;
-		// plug-in not installed
-			BE_GetLastError = "?" ;
+		// plug-in not available
+			~pluginInternalErrorCode = "?" ;
 			10000 ;
-		// map known responses to numeric coded values
-//			BE_GetLastError = "some known response" ;
-//			1 ;
+		// if ~pluginInternalErrorCode is numeric, use it
+			GetAsNumber ( ~pluginInternalErrorCode ) = ~pluginInternalErrorCode ;
+			~pluginInternalErrorCode
 		// else, use "unknown" code
 			-1
 		)
@@ -49,9 +53,14 @@ Let ( [
 		Case (
 			~theErrorCode = -1 ;		"Unknown error" ;
 			~theErrorCode = 0 ;		"No error" ;
-			~theErrorCode = 10000 ;		"BaseElements plug-in is not installed" ;
-		// else
-			BE_GetLastError
+			~theErrorCode = 10000 ;		"BaseElements plug-in is not available" ;
+		// else:
+		// BaseElements does not have a text description to go with it's error codes
+		// but some functions return error info
+			If ( thePlugInResult ≠ "?" and thePlugInResult ≠ 0 and not IsEmpty ( thePlugInResult ) ;
+				thePlugInResult ;
+				"no description available"
+			)
 		)
 ] ;
 	Error ( "Plugin: BaseElements" ; ~theErrorCode ; ~errorDescription ; theErrorInfo )
@@ -59,5 +68,9 @@ Let ( [
 		# ( "plugInResult" ; thePlugInResult )
 		& # ( "BE_GetLastError" ; BE_GetLastError )
 		& # ( "BE_GetLastDDLError" ; BE_GetLastDDLError )
+		& # ( "BE_JSON_Error_Description" ; BE_JSON_Error_Description )
+	)
+	& If ( ~theErrorCode = 10000 ;
+		# ( "InstalledFMPlugins" ; Get ( InstalledFMPlugins ) )
 	)
 )
