@@ -3,34 +3,23 @@
  * ErrorFound ( theErrorData )
  *
  * RETURNS:
- *		ErrorCode contained in theErrorData as a Boolean. In other words,
- *		if any error occurred at all, return True (1), otherwise return
- *		False (0).
+ *		ErrorCode contained in theErrorData as a Boolean. In other words, if any error occurred at
+ *		all, return True (1), otherwise return False (0).
  *
  * PARAMETERS:
- *		theErrorData = (json) output of Error custom function
- *
- * DEPENDENCIES:
- *		Custom Functions: #Get
- *
- * HISTORY:
- *		MODIFIED on 2018-JUN-01 by Daniel Smith dan@filemaker.consulting
- *			- expect JSON parameter
- *		MODIFIED on 2013-NOV-22 by Daniel Smith dansmith65@gmail.com
- *			- renamed to ErrorFound, update documentation
- *		MODIFIED on 2013-OCT-11 by Daniel Smith dansmith65@gmail.com
- *			- renamed from IsError to #IsError
- *			- update documentation in script header
- *		MODIFIED on 2012-NOV-21 by Daniel Smith dansmith65@gmail.com
- *			- don't access $error variable directly
- *		CREATED on 2012-NOV-20 Daniel Smith dansmith65@gmail.com
+ *		theErrorData | (let notation) output of Error custom function
  *
  * REFERENCES:
  *		https://github.com/dansmith65/FileMaker-Error-Handling
+ *
+ * HISTORY:
+ *		2024-APR-12 Daniel Smith dan@filemaker.consulting
+ *			- created based on various old iterations of the same basic function
  * =====================================
  */
 
 not IsEmpty ( theErrorData )
+and theErrorData ≠ "{}"
 and GetAsBoolean (
 	JSONGetElement ( theErrorData ; "errorCode" )
 )

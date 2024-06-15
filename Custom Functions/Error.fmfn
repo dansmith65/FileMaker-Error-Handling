@@ -2,56 +2,41 @@
  * =====================================
  * Error ( theErrorType ; theErrorCode ; theErrorDescription ; theErrorInfo )
  *
- * RETURNS:
- *		JSON containing information about the error and the environment
- *		it occurred in.
+ * RETURNS: (JSON Object)
+ *		Containing information about the error and the environment it occurred in.
  *
  * PARAMETERS:
- *		theErrorType = (text) origin of the error
- *			(e.g., "Fmp", "App", "Plugin: ScriptMaster", "mFM: JSON", etc.)
- *		theErrorCode = (number) code for the error
- *		theErrorDescription = (text) description of the error, preferably human 
- *			readable and decipherable
- *		theErrorInfo = (text, optional) some text describing the particular
- *			instance of this error. This should help a developer locate where
- *			in a script the error occured.
- *			(e.g., "create new invoice record")
- *
- * DEPENDENCIES:
- *		Custom Functions: #
+ *		theErrorType | (text) origin of the error
+ *			(e.g., "Fmp", "App", "Plugin: BaseElements", "Module: PluginChecker", etc.)
+ *		theErrorCode | (number) code for the error
+ *		theErrorDescription | (text) description of the error, preferably human readable and
+ *			decipherable. For origin's like FileMaker, this should be the generic message the code
+ *			maps to. Some origin's don't have such generic messages, in which case this can be used
+ *			in place of theErrorInfo parameter, since theErrorDescription _should not be empty_.
+ *		theErrorInfo | (text, optional) some text describing the particular instance of this error.
  *
  * NOTE:
- *		This function contains a recommended set of environmental data, but you
- *		may choose to add or remove name/value pairs from this function as you
- *		see fit for your solution. All error generating custom functions
- *		call this function, so it is the central place to define default
- *		environmental data collected when an error occurs.
+ *		This function contains a recommended set of environmental data, but you may choose to add
+ *		or remove from this function as you see fit for your solution. All error generating custom
+ *		functions call this function, so it is the central place to define default environmental
+ *		data collected when an error occurs, as long as it applies to all error types.
  *
- *		Environmental data that is likely to change from the time the error occurs
- *		to the time log data is collected should be included in this function.
- *
- *
- * HISTORY:
- *		MODIFIED on 2020-APR-25 by Daniel Smith dan@filemaker.consulting
- *			- encode parameter and result as object, if it's valid json
- *		MODIFIED on 2018-JUN-01 by Daniel Smith dan@filemaker.consulting
- *			- convert to JSON result
- *		MODIFIED on 2015-JAN-22 by Daniel Smith dansmith65@gmail.com
- *			- only encode errorCode if no error
- *		MODIFIED on 2014-JUL-22 by Daniel Smith dansmith65@gmail.com
- *			- add $~script.section
- *			- manually encode common values instead of using # ( name ; value )
- *			  custom function, for performance
- *		MODIFIED on 2013-NOV-22 by Daniel Smith dansmith65@gmail.com
- *			- change name to Error, update documentation
- *		CREATED on 2013-OCT-11 by Daniel Smith dansmith65@gmail.com
+ *		Environmental data that is likely to change from the time the error occurs to the time log
+ *		data is collected should be included in this function.
  *
  * REFERENCES:
  *		https://github.com/dansmith65/FileMaker-Error-Handling
+ *
+ * HISTORY:
+ *		2024-APR-12 Daniel Smith dan@filemaker.consulting
+ *			- created based on various old iterations of the same basic function
  * =====================================
  */
 
-If ( theErrorCode ;
+If ( not theErrorCode ;
+	/* lightweight response when no error */
+	"{}" ;
+
 	JSONSetElement ( "{}" ;
 		// information about the error
 		// these should NOT be modified, they should be consistent from one database to the next
@@ -59,20 +44,17 @@ If ( theErrorCode ;
 		[ "errorType" ; theErrorType ; JSONString ] ;
 		[ "errorDescription" ; theErrorDescription ; JSONString ] ;
 		[ "errorInfo" ; theErrorInfo ; JSONString ] ;
-		
+
 		// information about the environment
 		// these values should be adjusted as needed for the database
 		[ "ScriptName" ; Get ( ScriptName ) ; JSONString ] ;
 		[ "ScriptParameter" ; Get ( ScriptParameter ) ;
-			If ( Left ( JSONFormatElements ( Get ( ScriptParameter ) ) ; 1 ) ≠ "?" ; JSONObject ; JSONString )
+			If ( Left ( JSONFormatElements ( Get ( ScriptParameter ) ) ; 1 ) = "{" ; JSONObject ; JSONString )
 		] ;
 		[ "ScriptResult" ; Get ( ScriptResult ) ;
-			If ( Left ( JSONFormatElements ( Get ( ScriptResult ) ) ; 1 ) ≠ "?" ; JSONObject ; JSONString )
+			If ( Left ( JSONFormatElements ( Get ( ScriptResult ) ) ; 1 ) = "{" ; JSONObject ; JSONString )
 		] ;
-		
-		[ "~script_section" ; $~script.section ; JSONString ]
-	) ;
-	
-	/* else: lightweight response when no error */
-	"{\"errorCode\":0}"
+		[ "CurrentTimeUTCMilliseconds" ; Get ( CurrentTimeUTCMilliseconds ) ; JSONString ] ;
+		[ "~script.section" ; $~script.section ; JSONString ]
+	)
 )

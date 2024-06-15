@@ -1,0 +1,65 @@
+/**
+ * =====================================
+ * ErrorScriptResultIfError ( performScriptName )
+ *
+ * PURPOSE:
+ *		Check for all errors after performing a script that should return JSON and save JSON error
+ *		information to $error and return a Boolean result.
+ *
+ * RETURNS:
+ *		True for error, otherwise False
+ *
+ * PARAMETERS:
+ *		performScriptName | name of the script just performed
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: ErrorFmpIfLastError, ErrorAppIf
+ *
+ * REFERENCES:
+ *		https://github.com/dansmith65/FileMaker-Error-Handling
+ *
+ * HISTORY:
+ *		2024-APR-12 Daniel Smith dan@filemaker.consulting
+ *			- created based on various old iterations of the same basic function
+ * =====================================
+ */
+
+If (
+	ErrorFmpIfLastError (
+		"after perform script"
+		& If ( IsEmpty ( performScriptName ) ; " step" ;
+			": " & performScriptName
+		)
+	) ;
+	True ;
+		
+	Let ( ~error = JSONGetElement ( Get ( ScriptResult ) ; "error" ) ;
+		Case (
+			ErrorAppIf ( Left ( ~error ; 1 ) = "?" ; 19 ; performScriptName ) ;
+			/* Invalid script result (was not JSON) */
+			True ;
+			
+			ErrorFound ( ~error ) ;
+			/* Add this script's name to the stack. This will allow all "parent" scripts to see the
+			   entire list of scripts called that led to this error. */
+			Let ( $error =
+				JSONSetElement ( ~error ; "scriptStack" ;
+					List (
+						Get ( ScriptName ) ;
+						Let ( ~scriptStack = JSONGetElement ( ~error ; "scriptStack" ) ;
+							If ( IsEmpty ( ~scriptStack ) ;
+								/* start the stack with the script that generated the error */
+								JSONGetElement ( ~error ; "ScriptName" ) ;
+								/* else: append previous stack */
+								~scriptStack
+							)
+						)
+					)
+					; JSONString )
+			; True ) ;
+
+			/* Else no error */
+			Let ( $error = "{}" ; False )
+		)
+	) /* end of Let */
+)

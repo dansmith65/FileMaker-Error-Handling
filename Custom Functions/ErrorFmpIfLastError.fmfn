@@ -1,0 +1,26 @@
+/**
+ * =====================================
+ * ErrorFmpIfLastError ( theErrorInfo )
+ *
+ * PURPOSE:
+ *		Syntactic sugar for the most common way to check for FileMaker errors.
+ *		Save JSON error information to $error and return a Boolean result.
+ *
+ * RETURNS:
+ *		GetAsBoolean ( Get ( LastError ) )
+ *
+ * PARAMETERS:
+ *		theErrorInfo | (text, optional) some text describing the particular instance of this error.
+ *			With the addition of Get(LastErrorLocation) in FM 19.6.1, this parameter no longer has
+ *			to help a developer locate where in a script the error occurred.
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: ErrorFmpIf
+ *
+ * HISTORY:
+ *		2024-APR-12 Daniel Smith dan@filemaker.consulting
+ *			- created
+ * =====================================
+ */
+
+ErrorFmpIf ( Get ( LastError ) ; theErrorInfo )

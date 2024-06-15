@@ -1,0 +1,61 @@
+/**
+ * =====================================
+ * ErrorFmpIf ( theErrorCode ; theErrorInfo )
+ *
+ * PURPOSE:
+ *		Save JSON error information to $error and return a Boolean result.
+ *
+ * RETURNS:
+ *		GetAsBoolean ( theErrorCode )
+ *
+ * PARAMETERS:
+ *		theErrorCode = (number) code for a FileMaker error, which is also used as the condition
+ *		theErrorInfo | (text, optional) some text describing the particular instance of this error.
+ *			With the addition of Get(LastErrorLocation) in FM 19.6.1, this parameter no longer has
+ *			to help a developer locate where in a script the error occurred.
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: Error, ErrorDescriptionFmp
+ *
+ * HISTORY:
+ *		2024-APR-12 Daniel Smith dan@filemaker.consulting
+ *			- created based on various old iterations of the same basic function
+ * =====================================
+ */
+
+If ( not theErrorCode ;
+	If ( $error ≠ "{}" ;
+		Let ( $error = "{}" ; False ) ;
+		False
+	) ;
+
+	Let ( [
+		~error = JSONSetElement (
+			Error ( "Fmp" ; theErrorCode ; ErrorDescriptionFmp ( theErrorCode ) ; theErrorInfo ) ;
+			[ "LastErrorLocation" ; Get ( LastErrorLocation ) ; JSONString ]
+		) ;
+		$error =
+			Case (
+				// add additional info useful for debugging specific errors...
+				
+				theErrorCode = 3 ; /* Command is unavailable (for example, wrong operating system, wrong mode, etc.) */
+				JSONSetElement ( ~error ;
+					[ "WindowMode" ; Get ( WindowMode ) ; JSONString ] ;
+					[ "SystemPlatform" ; Get ( SystemPlatform ) ; JSONString ] ;
+					[ "ApplicationVersion" ; Get ( ApplicationVersion ) ; JSONString ] ;
+					[ "HostApplicationVersion" ; Get ( HostApplicationVersion ) ; JSONString ]
+				) ;
+				
+				theErrorCode = 9 /* Insufficient privileges */
+					or Int ( theErrorCode / 100 ) = 2 /* 2xx are permissions related errors*/
+				;
+				JSONSetElement ( ~error ;
+					[ "AccountPrivilegeSetName" ; Get ( AccountPrivilegeSetName ) ; JSONString ] ;
+					[ "CurrentPrivilegeSetName" ; Get ( CurrentPrivilegeSetName ) ; JSONString ]
+				) ;
+				
+				/* else */
+				~error
+			)
+	] ; True )
+)
