@@ -1,17 +1,34 @@
 /**
  * =====================================
- * ErrorDescriptionFmp ( theErrorCode )
+ * ErrorDescriptionFmp ( theCode )
  *
  * RETURNS: (text)
  *		FileMaker's description associated with an error code.
  *
  * PARAMETERS:
- *		theErrorCode = (number) code for a FileMaker error
+ *		theCode = (number) code for a FileMaker error
  *
- * DEPENDENCIES:
- *		none
+ * DEPENDENCIES: none
+ *
+ * REFERENCES:
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
+ *		https://help.claris.com/en/pro-help/content/error-codes.html
+ *		https://help.claris.com/archive/fm20/en/pro-help/content/error-codes.html
+ *		https://help.claris.com/archive/fm19/en/pro-help/content/error-codes.html
+ *		https://fmhelp.filemaker.com/help/18/fmp/en/#page/FMP_Help%2Ferror-codes.html
+ *		https://fmhelp.filemaker.com/help/17/fmp/en/#page/FMP_Help%2Ferror-codes.html
+ *		https://fmhelp.filemaker.com/help/16/fmp/en/#page/FMP_Help%2Ferror-codes.html
+ *		https://fmhelp.filemaker.com/help/15/fmp/en/#page/FMP_Help%2Ferror-codes.html
+ *		https://fmhelp.filemaker.com/help/14/fmp/en/html/error_codes.html#1030072
+ *		https://fmhelp.filemaker.com/help/13/fmp/en/html/error_codes.html#1030072
+ *		https://fmhelp.filemaker.com/help/12/fmp/en/html/error_codes.html#1030072
  *
  * HISTORY:
+ *		MODIFIED on 2024-JUL-08 by Daniel Smith
+ *			- modify message for codes 718 and 719 based on application version
+ *			  thanks to input from Beverly Voth
  *		MODIFIED on 2024-JUN-13 by Josh Willing josh@willingapps.com
  *			- add error codes from FM21
  *		MODIFIED on 2024-APR-12 by Daniel Smith
@@ -25,7 +42,7 @@
  *			- modified ErrorFmp function to only return a text description
  *		MODIFIED on 2019-FEB-08 by Daniel Smith dan@filemaker.consulting
  *			- added LastExternalErrorDetail for error code 301
- *			- remove ~errorCode Let variable; directly use theErrorCode
+ *			- remove ~errorCode Let variable; directly use theCode
  *		MODIFIED on 2019-FEB-08 by Daniel Smith dan@filemaker.consulting
  *			- update for FM17 error codes
  *			- used creative merging of differences in descriptions. My goal was
@@ -38,366 +55,359 @@
  *		MODIFIED on 2013-NOV-22 by Daniel Smith dansmith65@gmail.com
  *			- rename to ErrorFmp, update documentation
  *		CREATED on 2019-MAY-30 Daniel Smith dansmith65@gmail.com
- *
- * REFERENCES:
- *		https://help.claris.com/en/pro-help/content/error-codes.html
- *		https://help.claris.com/archive/fm20/en/pro-help/content/error-codes.html
- *		https://help.claris.com/archive/fm19/en/pro-help/content/error-codes.html
- *		https://fmhelp.filemaker.com/help/18/fmp/en/#page/FMP_Help%2Ferror-codes.html
- *		https://fmhelp.filemaker.com/help/17/fmp/en/#page/FMP_Help%2Ferror-codes.html
- *		https://fmhelp.filemaker.com/help/16/fmp/en/#page/FMP_Help%2Ferror-codes.html
- *		https://fmhelp.filemaker.com/help/15/fmp/en/#page/FMP_Help%2Ferror-codes.html
- *		https://fmhelp.filemaker.com/help/14/fmp/en/html/error_codes.html#1030072
- *		https://fmhelp.filemaker.com/help/13/fmp/en/html/error_codes.html#1030072
- *		https://fmhelp.filemaker.com/help/12/fmp/en/html/error_codes.html#1030072
- *		https://github.com/dansmith65/FileMaker-Error-Handling
  * =====================================
  */
 
-Let ( theErrorCode = GetAsNumber ( theErrorCode ) ; Case (
-	theErrorCode < 100 ;
+Let ( theCode = GetAsNumber ( theCode ) ; Case (
+	theCode < 100 ;
 	Case (
-		theErrorCode = -1 ;	"Unknown error" ;
-		theErrorCode = 0 ;	"No error" ;
-		theErrorCode = 1 ;	"User canceled action" ;
-		theErrorCode = 2 ;	"Memory error" ;
-		theErrorCode = 3 ;	"Command is unavailable (for example, wrong operating system or mode)" ;
-		theErrorCode = 4 ;	"Command is unknown" ;
-		theErrorCode = 5 ;	"Command is invalid (for example, a Set Field script step does not have a calculation specified)" ;
-		theErrorCode = 6 ;	"File is read-only" ;
-		theErrorCode = 7 ;	"Running out of memory" ;
-		theErrorCode = 8 ;	"Empty result" ; /* removed in FM20 */
-		theErrorCode = 9 ;	"Insufficient privileges" ;
-		theErrorCode = 10 ;	"Requested data is missing" ;
-		theErrorCode = 11 ;	"Name is not valid" ;
-		theErrorCode = 12 ;	"Name already exists" ;
-		theErrorCode = 13 ;	"File or object is in use" ;
-		theErrorCode = 14 ;	"Out of range" ;
-		theErrorCode = 15 ;	"Can't divide by zero" ;
-		theErrorCode = 16 ;	"Operation failed; request retry (for example, a user query)" ;
-		theErrorCode = 17 ;	"Attempt to convert foreign character set to UTF-16 failed" ;
-		theErrorCode = 18 ;	"Client must provide account information to proceed" ;
-		theErrorCode = 19 ;	"String contains characters other than A-Z, a-z, 0-9 (ASCII)" ;
-		theErrorCode = 20 ;	"Command/operation canceled by triggered script" ;
-		theErrorCode = 21 ;	"Request not supported (for example, when creating a hard link on a file system that does not support hard links)" ; /* added in FM13 */
+		theCode = -1 ;	"Unknown error" ;
+		theCode = 0 ;	"No error" ;
+		theCode = 1 ;	"User canceled action" ;
+		theCode = 2 ;	"Memory error" ;
+		theCode = 3 ;	"Command is unavailable (for example, wrong operating system or mode)" ;
+		theCode = 4 ;	"Command is unknown" ;
+		theCode = 5 ;	"Command is invalid (for example, a Set Field script step does not have a calculation specified)" ;
+		theCode = 6 ;	"File is read-only" ;
+		theCode = 7 ;	"Running out of memory" ;
+		theCode = 8 ;	"Empty result" ; /* removed in FM20 */
+		theCode = 9 ;	"Insufficient privileges" ;
+		theCode = 10 ;	"Requested data is missing" ;
+		theCode = 11 ;	"Name is not valid" ;
+		theCode = 12 ;	"Name already exists" ;
+		theCode = 13 ;	"File or object is in use" ;
+		theCode = 14 ;	"Out of range" ;
+		theCode = 15 ;	"Can't divide by zero" ;
+		theCode = 16 ;	"Operation failed; request retry (for example, a user query)" ;
+		theCode = 17 ;	"Attempt to convert foreign character set to UTF-16 failed" ;
+		theCode = 18 ;	"Client must provide account information to proceed" ;
+		theCode = 19 ;	"String contains characters other than A-Z, a-z, 0-9 (ASCII)" ;
+		theCode = 20 ;	"Command/operation canceled by triggered script" ;
+		theCode = 21 ;	"Request not supported (for example, when creating a hard link on a file system that does not support hard links)" ; /* added in FM13 */
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 200 ;
+
+	theCode < 200 ;
 	Case (
-		theErrorCode = 100 ;	"File is missing" ;
-		theErrorCode = 101 ;	"Record is missing" ;
-		theErrorCode = 102 ;	"Field is missing" ;
-		theErrorCode = 103 ;	"Relationship is missing" ;
-		theErrorCode = 104 ;	"Script is missing" ;
-		theErrorCode = 105 ;	"Layout is missing" ;
-		theErrorCode = 106 ;	"Table is missing" ;
-		theErrorCode = 107 ;	"Index is missing" ;
-		theErrorCode = 108 ;	"Value list is missing" ;
-		theErrorCode = 109 ;	"Privilege set is missing" ;
-		theErrorCode = 110 ;	"Related tables are missing" ;
-		theErrorCode = 111 ;	"Field repetition is invalid" ;
-		theErrorCode = 112 ;	"Window is missing" ;
-		theErrorCode = 113 ;	"Function is missing" ;
-		theErrorCode = 114 ;	"File reference is missing" ;
-		theErrorCode = 115 ;	"Menu set is missing" ;
-		theErrorCode = 116 ;	"Layout object is missing" ;
-		theErrorCode = 117 ;	"Data source is missing" ;
-		theErrorCode = 118 ;	"Theme is missing" ; /* added in FM12 */
-		theErrorCode = 130 ;	"Files are damaged or missing and must be reinstalled" ;
-		theErrorCode = 131 ;	"Language pack files are missing" ;
+		theCode = 100 ;	"File is missing" ;
+		theCode = 101 ;	"Record is missing" ;
+		theCode = 102 ;	"Field is missing" ;
+		theCode = 103 ;	"Relationship is missing" ;
+		theCode = 104 ;	"Script is missing" ;
+		theCode = 105 ;	"Layout is missing" ;
+		theCode = 106 ;	"Table is missing" ;
+		theCode = 107 ;	"Index is missing" ;
+		theCode = 108 ;	"Value list is missing" ;
+		theCode = 109 ;	"Privilege set is missing" ;
+		theCode = 110 ;	"Related tables are missing" ;
+		theCode = 111 ;	"Field repetition is invalid" ;
+		theCode = 112 ;	"Window is missing" ;
+		theCode = 113 ;	"Function is missing" ;
+		theCode = 114 ;	"File reference is missing" ;
+		theCode = 115 ;	"Menu set is missing" ;
+		theCode = 116 ;	"Layout object is missing" ;
+		theCode = 117 ;	"Data source is missing" ;
+		theCode = 118 ;	"Theme is missing" ; /* added in FM12 */
+		theCode = 130 ;	"Files are damaged or missing and must be reinstalled" ;
+		theCode = 131 ;	"Language pack files are missing" ;
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 300 ;
+
+	theCode < 300 ;
 	Case (
-		theErrorCode = 200 ;	"Record access is denied" ;
-		theErrorCode = 201 ;	"Field cannot be modified" ;
-		theErrorCode = 202 ;	"Field access is denied" ;
-		theErrorCode = 203 ;	"No records in file to print, or password doesn't allow print access" ;
-		theErrorCode = 204 ;	"No access to field(s) in sort order" ;
-		theErrorCode = 205 ;	"User does not have access privileges to create new records; import will overwrite existing data" ;
-		theErrorCode = 206 ;	"User does not have password change privileges, or file is not modifiable" ;
-		theErrorCode = 207 ;	"User does not have privileges to change database schema, or file is not modifiable" ;
-		theErrorCode = 208 ;	"Password does not contain enough characters" ;
-		theErrorCode = 209 ;	"New password must be different from existing one" ;
-		theErrorCode = 210 ;	"User account is inactive" ;
-		theErrorCode = 211 ;	"Password has expired" ;
-		theErrorCode = 212 ;	"Invalid user account or password" ;
-		theErrorCode = 213 ;	"User account and/or password does not exist" ; /* removed in FM17 */
-		theErrorCode = 214 ;	"Too many login attempts" ;
-		theErrorCode = 215 ;	"Administrator privileges cannot be duplicated" ;
-		theErrorCode = 216 ;	"Guest account cannot be duplicated" ;
-		theErrorCode = 217 ;	"User does not have sufficient privileges to modify administrator account" ;
-		theErrorCode = 218 ;	"Password and verify password do not match" ; /* added in FM12 */
-		theErrorCode = 219 ;	"Cannot open file; must be licensed user; contact team manager" ; /* added in FM18 */
+		theCode = 200 ;	"Record access is denied" ;
+		theCode = 201 ;	"Field cannot be modified" ;
+		theCode = 202 ;	"Field access is denied" ;
+		theCode = 203 ;	"No records in file to print, or password doesn't allow print access" ;
+		theCode = 204 ;	"No access to field(s) in sort order" ;
+		theCode = 205 ;	"User does not have access privileges to create new records; import will overwrite existing data" ;
+		theCode = 206 ;	"User does not have password change privileges, or file is not modifiable" ;
+		theCode = 207 ;	"User does not have privileges to change database schema, or file is not modifiable" ;
+		theCode = 208 ;	"Password does not contain enough characters" ;
+		theCode = 209 ;	"New password must be different from existing one" ;
+		theCode = 210 ;	"User account is inactive" ;
+		theCode = 211 ;	"Password has expired" ;
+		theCode = 212 ;	"Invalid user account or password" ;
+		theCode = 213 ;	"User account and/or password does not exist" ; /* removed in FM17 */
+		theCode = 214 ;	"Too many login attempts" ;
+		theCode = 215 ;	"Administrator privileges cannot be duplicated" ;
+		theCode = 216 ;	"Guest account cannot be duplicated" ;
+		theCode = 217 ;	"User does not have sufficient privileges to modify administrator account" ;
+		theCode = 218 ;	"Password and verify password do not match" ; /* added in FM12 */
+		theCode = 219 ;	"Cannot open file; must be licensed user; contact team manager" ; /* added in FM18 */
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 500 ;
+
+	theCode < 500 ;
 	Case (
-		theErrorCode = 300 ;	"File is locked or in use" ;
-		theErrorCode = 301 ;	"Record is in use by another user" ;
-		theErrorCode = 302 ;	"Table is in use by another user" ;
-		theErrorCode = 303 ;	"Database schema is in use by another user" ;
-		theErrorCode = 304 ;	"Layout is in use by another user" ;
-		theErrorCode = 306 ;	"Record modification ID does not match" ;
-		theErrorCode = 307 ;	"Transaction could not be locked because of a communication error with the host" ; /* added in FM12 */
-		theErrorCode = 308 ;	"Theme is locked and in use by another user" ; /* added in FM12 */
-		theErrorCode = 400 ;	"Find criteria are empty" ;
-		theErrorCode = 401 ;	"No records match the request" ;
-		theErrorCode = 402 ;	"Selected field is not a match field for a lookup" ;
-		theErrorCode = 403 ;	"Exceeding maximum record limit for trial version of FileMaker Pro" ; /* removed in FM17 */
-		theErrorCode = 404 ;	"Sort order is invalid" ;
-		theErrorCode = 405 ;	"Number of records specified exceeds number of records that can be omitted" ;
-		theErrorCode = 406 ;	"Replace/reserialize criteria are invalid" ;
-		theErrorCode = 407 ;	"One or both match fields are missing (invalid relationship)" ;
-		theErrorCode = 408 ;	"Specified field has inappropriate data type for this operation" ;
-		theErrorCode = 409 ;	"Import order is invalid" ;
-		theErrorCode = 410 ;	"Export order is invalid" ;
-		theErrorCode = 412 ;	"Wrong version of FileMaker Pro used to recover file" ;
-		theErrorCode = 413 ;	"Specified field has inappropriate field type" ;
-		theErrorCode = 414 ;	"Layout cannot display the result" ;
-		theErrorCode = 415 ;	"One or more required related records are not available" ;
-		theErrorCode = 416 ;	"A primary key is required from the data source table" ;
-		theErrorCode = 417 ;	"File is not a supported data source" ;
-		theErrorCode = 418 ;	"Internal failure in INSERT operation into a field" ; /* added in FM13 */
+		theCode = 300 ;	"File is locked or in use" ;
+		theCode = 301 ;	"Record is in use by another user" ;
+		theCode = 302 ;	"Table is in use by another user" ;
+		theCode = 303 ;	"Database schema is in use by another user" ;
+		theCode = 304 ;	"Layout is in use by another user" ;
+		theCode = 306 ;	"Record modification ID does not match" ;
+		theCode = 307 ;	"Transaction could not be locked because of a communication error with the host" ; /* added in FM12 */
+		theCode = 308 ;	"Theme is locked and in use by another user" ; /* added in FM12 */
+		theCode = 400 ;	"Find criteria are empty" ;
+		theCode = 401 ;	"No records match the request" ;
+		theCode = 402 ;	"Selected field is not a match field for a lookup" ;
+		theCode = 403 ;	"Exceeding maximum record limit for trial version of FileMaker Pro" ; /* removed in FM17 */
+		theCode = 404 ;	"Sort order is invalid" ;
+		theCode = 405 ;	"Number of records specified exceeds number of records that can be omitted" ;
+		theCode = 406 ;	"Replace/reserialize criteria are invalid" ;
+		theCode = 407 ;	"One or both match fields are missing (invalid relationship)" ;
+		theCode = 408 ;	"Specified field has inappropriate data type for this operation" ;
+		theCode = 409 ;	"Import order is invalid" ;
+		theCode = 410 ;	"Export order is invalid" ;
+		theCode = 412 ;	"Wrong version of FileMaker Pro used to recover file" ;
+		theCode = 413 ;	"Specified field has inappropriate field type" ;
+		theCode = 414 ;	"Layout cannot display the result" ;
+		theCode = 415 ;	"One or more required related records are not available" ;
+		theCode = 416 ;	"A primary key is required from the data source table" ;
+		theCode = 417 ;	"File is not a supported data source" ;
+		theCode = 418 ;	"Internal failure in INSERT operation into a field" ; /* added in FM13 */
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 700 ;
+
+	theCode < 700 ;
 	Case (
-		theErrorCode = 500 ;	"Date value does not meet validation entry options" ;
-		theErrorCode = 501 ;	"Time value does not meet validation entry options" ;
-		theErrorCode = 502 ;	"Number value does not meet validation entry options" ;
-		theErrorCode = 503 ;	"Value in field is not within the range specified in validation entry options" ;
-		theErrorCode = 504 ;	"Value in field is not unique, as required in validation entry options" ;
-		theErrorCode = 505 ;	"Value in field is not an existing value in the file, as required in validation entry options" ;
-		theErrorCode = 506 ;	"Value in field is not listed in the value list specified in validation entry option" ;
-		theErrorCode = 507 ;	"Value in field failed calculation test of validation entry option" ;
-		theErrorCode = 508 ;	"Invalid value entered in Find mode" ;
-		theErrorCode = 509 ;	"Field requires a valid value" ;
-		theErrorCode = 510 ;	"Related value is empty or unavailable" ;
-		theErrorCode = 511 ;	"Value in field exceeds maximum field size" ;
-		theErrorCode = 512 ;	"Record was already modified by another user" ;
-		theErrorCode = 513 ;	"No validation was specified but data cannot fit into the field" ; /* added in FM13 */
-		theErrorCode = 600 ;	"Print error has occurred" ;
-		theErrorCode = 601 ;	"Combined header and footer exceed one page" ;
-		theErrorCode = 602 ;	"Body doesn't fit on a page for current column setup" ;
-		theErrorCode = 603 ;	"Print connection lost" ;
+		theCode = 500 ;	"Date value does not meet validation entry options" ;
+		theCode = 501 ;	"Time value does not meet validation entry options" ;
+		theCode = 502 ;	"Number value does not meet validation entry options" ;
+		theCode = 503 ;	"Value in field is not within the range specified in validation entry options" ;
+		theCode = 504 ;	"Value in field is not unique, as required in validation entry options" ;
+		theCode = 505 ;	"Value in field is not an existing value in the file, as required in validation entry options" ;
+		theCode = 506 ;	"Value in field is not listed in the value list specified in validation entry option" ;
+		theCode = 507 ;	"Value in field failed calculation test of validation entry option" ;
+		theCode = 508 ;	"Invalid value entered in Find mode" ;
+		theCode = 509 ;	"Field requires a valid value" ;
+		theCode = 510 ;	"Related value is empty or unavailable" ;
+		theCode = 511 ;	"Value in field exceeds maximum field size" ;
+		theCode = 512 ;	"Record was already modified by another user" ;
+		theCode = 513 ;	"No validation was specified but data cannot fit into the field" ; /* added in FM13 */
+		theCode = 600 ;	"Print error has occurred" ;
+		theCode = 601 ;	"Combined header and footer exceed one page" ;
+		theCode = 602 ;	"Body doesn't fit on a page for current column setup" ;
+		theCode = 603 ;	"Print connection lost" ;
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 800 ;
+
+	theCode < 800 ;
 	Case (
-		theErrorCode = 700 ;	"File is of the wrong file type for import" ;
-		theErrorCode = 706 ;	"EPS file has no preview image" ;
-		theErrorCode = 707 ;	"Graphic translator cannot be found" ;
-		theErrorCode = 708 ;	"Can't import the file, or need color monitor support to import file" ;
-		theErrorCode = 709 ;	"QuickTime movie import failed" ; /* removed in FM14 */
-		theErrorCode = 710 ;	"Unable to update QuickTime reference because the database file is read-only" ; /* removed in FM14 */
-		theErrorCode = 711 ;	"Import translator cannot be found" ;
-		theErrorCode = 714 ;	"Password privileges do not allow the operation" ;
-		theErrorCode = 715 ;	"Specified Excel worksheet or named range is missing" ;
-		theErrorCode = 716 ;	"A SQL query using DELETE, INSERT, or UPDATE is not allowed for ODBC import" ;
-		theErrorCode = 717 ;	"There is not enough XML/XSL information to proceed with the import or export" ;
-		theErrorCode = 718 ;	"Error in parsing XML file (from Xerces)" ;
-		theErrorCode = 719 ;	"Error in transforming XML using XSL (from Xalan)" ;
-		theErrorCode = 720 ;	"Error when exporting; intended format does not support repeating fields" ;
-		theErrorCode = 721 ;	"Unknown error occurred in the parser or the transformer" ;
-		theErrorCode = 722 ;	"Cannot import data into a file that has no fields" ;
-		theErrorCode = 723 ;	"You do not have permission to add records to or modify records in the target table" ;
-		theErrorCode = 724 ;	"You do not have permission to add records to the target table" ;
-		theErrorCode = 725 ;	"You do not have permission to modify records in the target table" ;
-		theErrorCode = 726 ;	"Source file has more records than the target table; not all records were imported" ;
-		theErrorCode = 727 ;	"Target table has more records than the source file; not all records were updated" ;
-		theErrorCode = 729 ;	"Errors occurred during import; records could not be imported" ;
-		theErrorCode = 730 ;	"Unsupported Excel version; convert file to the current Excel format and try again" ;
-		theErrorCode = 731 ;	"File you are importing from contains no data" ;
-		theErrorCode = 732 ;	"This file cannot be inserted because it contains other files" ;
-		theErrorCode = 733 ;	"A table cannot be imported into itself" ;
-		theErrorCode = 734 ;	"This file type cannot be displayed as a picture" ;
-		theErrorCode = 735 ;	"This file type cannot be displayed as a picture; it will be inserted and displayed as a file" ;
-		theErrorCode = 736 ;	"Too much data to export to this format; data will be truncated" ;
-		theErrorCode = 737 ;	"Bento table you are importing is missing" ; /* removed in FM14 */
-		theErrorCode = 738 ;	"The theme you are importing already exists" ;
+		theCode = 700 ;	"File is of the wrong file type for import" ;
+		theCode = 706 ;	"EPS file has no preview image" ;
+		theCode = 707 ;	"Graphic translator cannot be found" ;
+		theCode = 708 ;	"Can't import the file, or need color monitor support to import file" ;
+		theCode = 709 ;	"QuickTime movie import failed" ; /* removed in FM14 */
+		theCode = 710 ;	"Unable to update QuickTime reference because the database file is read-only" ; /* removed in FM14 */
+		theCode = 711 ;	"Import translator cannot be found" ;
+		theCode = 714 ;	"Password privileges do not allow the operation" ;
+		theCode = 715 ;	"Specified Excel worksheet or named range is missing" ;
+		theCode = 716 ;	"A SQL query using DELETE, INSERT, or UPDATE is not allowed for ODBC import" ;
+		theCode = 717 ;	"There is not enough XML/XSL information to proceed with the import or export" ;
+		theCode = 718 ;	If ( GetAsNumber ( Get ( ApplicationVersion ) ) < 21 ;
+			"Error in parsing XML file (from Xerces)" ;
+			"Error in parsing XML file (from libxml2)"
+		) ;
+		theCode = 719 ;	If ( GetAsNumber ( Get ( ApplicationVersion ) ) < 21 ;
+			"Error in transforming XML using XSL (from Xalan)" ;
+			"Error in transforming XML using XSL (from libxslt)"
+		) ;
+		theCode = 720 ;	"Error when exporting; intended format does not support repeating fields" ;
+		theCode = 721 ;	"Unknown error occurred in the parser or the transformer" ;
+		theCode = 722 ;	"Cannot import data into a file that has no fields" ;
+		theCode = 723 ;	"You do not have permission to add records to or modify records in the target table" ;
+		theCode = 724 ;	"You do not have permission to add records to the target table" ;
+		theCode = 725 ;	"You do not have permission to modify records in the target table" ;
+		theCode = 726 ;	"Source file has more records than the target table; not all records were imported" ;
+		theCode = 727 ;	"Target table has more records than the source file; not all records were updated" ;
+		theCode = 729 ;	"Errors occurred during import; records could not be imported" ;
+		theCode = 730 ;	"Unsupported Excel version; convert file to the current Excel format and try again" ;
+		theCode = 731 ;	"File you are importing from contains no data" ;
+		theCode = 732 ;	"This file cannot be inserted because it contains other files" ;
+		theCode = 733 ;	"A table cannot be imported into itself" ;
+		theCode = 734 ;	"This file type cannot be displayed as a picture" ;
+		theCode = 735 ;	"This file type cannot be displayed as a picture; it will be inserted and displayed as a file" ;
+		theCode = 736 ;	"Too much data to export to this format; data will be truncated" ;
+		theCode = 737 ;	"Bento table you are importing is missing" ; /* removed in FM14 */
+		theCode = 738 ;	"The theme you are importing already exists" ;
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 900 ;
+
+	theCode < 900 ;
 	Case (
-		theErrorCode = 800 ;	"Unable to create file on disk" ;
-		theErrorCode = 801 ;	"Unable to create temporary file on System disk" ;
-		theErrorCode = 802 ;	"Unable to open file" ;
-		theErrorCode = 803 ;	"File is single-user, or host cannot be found" ;
-		theErrorCode = 804 ;	"File cannot be opened as read-only in its current state" ;
-		theErrorCode = 805 ;	"File is damaged; use Recover command" ;
-		theErrorCode = 806 ;	"File cannot be opened with this version of a FileMaker client" ;
-		theErrorCode = 807 ;	"File is not a FileMaker Pro file or is severely damaged" ;
-		theErrorCode = 808 ;	"Cannot open file because access privileges are damaged" ;
-		theErrorCode = 809 ;	"Disk/volume is full" ;
-		theErrorCode = 810 ;	"Disk/volume is locked" ;
-		theErrorCode = 811 ;	"Temporary file cannot be opened as FileMaker Pro file" ;
-		theErrorCode = 812 ;	"Exceeded host's capacity" ; /* added in FM13 */
-		theErrorCode = 813 ;	"Record synchronization error on network" ;
-		theErrorCode = 814 ;	"File(s) cannot be opened because maximum number is open" ;
-		theErrorCode = 815 ;	"Couldn't open lookup file" ;
-		theErrorCode = 816 ;	"Unable to convert file" ;
-		theErrorCode = 817 ;	"Unable to open file because it does not belong to this solution" ;
-		theErrorCode = 819 ;	"Cannot save a local copy of a remote file" ;
-		theErrorCode = 820 ;	"File is being closed" ;
-		theErrorCode = 821 ;	"Host forced a disconnect" ;
-		theErrorCode = 822 ;	"FileMaker Pro files not found; reinstall missing files" ;
-		theErrorCode = 823 ;	"Cannot set file to single-user; guests are connected" ;
-		theErrorCode = 824 ;	"File is damaged or not a FileMaker file" ;
-		theErrorCode = 825 ;	"File is not authorized to reference the protected file" ;
-		theErrorCode = 826 ;	"File path specified is not a valid file path" ; /* added in FM12 */
-		theErrorCode = 827 ;	"File was not created because the source contained no data or is a reference" ; /* added in FM14 */
-		theErrorCode = 850 ;	"Path is not valid for the operating system" ; /* added in FM12 */
-		theErrorCode = 851 ;	"Cannot delete an external file from disk" ; /* added in FM12 */
-		theErrorCode = 852 ;	"Cannot write a file to the external storage" ; /* added in FM12 */
-		theErrorCode = 853 ;	"One or more containers failed to transfer" ; /* added in FM13 */
-		theErrorCode = 870 ;	"Cannot modify file because another user is modifying it" ; /* added in FM18 */
-		theErrorCode = 871 ;	"Error occurred loading Core ML model" ; /* added in FM19 */
-		theErrorCode = 872 ;	"Core ML model was not loaded because it contained an unsupported input or output parameter" ; /* added in FM19 */
-		theErrorCode = 875 ; "Endpoint is empty" ; /* Added in FM21 */
-		theErrorCode = 877 ; "Can't find AI account" ; /* Added in FM21 */
-		theErrorCode = 878 ; "JSON data for Options contains a formatting error and couldn't be parsed" ; /* Added in FM21 */
-		theErrorCode = 882 ; "Invalid AI request" ; /* Added in FM21 */
-		theErrorCode = 883 ; "Invalid request to custom model provider" ; /* Added in FM21 */
-		theErrorCode = 884 ; "Invalid AI request" ; /* Added in FM21 */
-		theErrorCode = 885 ; "Endpoint is invalid or server is unreachable" ; /* Added in FM21 */
+		theCode = 800 ;	"Unable to create file on disk" ;
+		theCode = 801 ;	"Unable to create temporary file on System disk" ;
+		theCode = 802 ;	"Unable to open file" ;
+		theCode = 803 ;	"File is single-user, or host cannot be found" ;
+		theCode = 804 ;	"File cannot be opened as read-only in its current state" ;
+		theCode = 805 ;	"File is damaged; use Recover command" ;
+		theCode = 806 ;	"File cannot be opened with this version of a FileMaker client" ;
+		theCode = 807 ;	"File is not a FileMaker Pro file or is severely damaged" ;
+		theCode = 808 ;	"Cannot open file because access privileges are damaged" ;
+		theCode = 809 ;	"Disk/volume is full" ;
+		theCode = 810 ;	"Disk/volume is locked" ;
+		theCode = 811 ;	"Temporary file cannot be opened as FileMaker Pro file" ;
+		theCode = 812 ;	"Exceeded host's capacity" ; /* added in FM13 */
+		theCode = 813 ;	"Record synchronization error on network" ;
+		theCode = 814 ;	"File(s) cannot be opened because maximum number is open" ;
+		theCode = 815 ;	"Couldn't open lookup file" ;
+		theCode = 816 ;	"Unable to convert file" ;
+		theCode = 817 ;	"Unable to open file because it does not belong to this solution" ;
+		theCode = 819 ;	"Cannot save a local copy of a remote file" ;
+		theCode = 820 ;	"File is being closed" ;
+		theCode = 821 ;	"Host forced a disconnect" ;
+		theCode = 822 ;	"FileMaker Pro files not found; reinstall missing files" ;
+		theCode = 823 ;	"Cannot set file to single-user; guests are connected" ;
+		theCode = 824 ;	"File is damaged or not a FileMaker file" ;
+		theCode = 825 ;	"File is not authorized to reference the protected file" ;
+		theCode = 826 ;	"File path specified is not a valid file path" ; /* added in FM12 */
+		theCode = 827 ;	"File was not created because the source contained no data or is a reference" ; /* added in FM14 */
+		theCode = 850 ;	"Path is not valid for the operating system" ; /* added in FM12 */
+		theCode = 851 ;	"Cannot delete an external file from disk" ; /* added in FM12 */
+		theCode = 852 ;	"Cannot write a file to the external storage" ; /* added in FM12 */
+		theCode = 853 ;	"One or more containers failed to transfer" ; /* added in FM13 */
+		theCode = 870 ;	"Cannot modify file because another user is modifying it" ; /* added in FM18 */
+		theCode = 871 ;	"Error occurred loading Core ML model" ; /* added in FM19 */
+		theCode = 872 ;	"Core ML model was not loaded because it contained an unsupported input or output parameter" ; /* added in FM19 */
+		theCode = 875 ; "Endpoint is empty" ; /* Added in FM21 */
+		theCode = 877 ; "Can't find AI account" ; /* Added in FM21 */
+		theCode = 878 ; "JSON data for Options contains a formatting error and couldn't be parsed" ; /* Added in FM21 */
+		theCode = 882 ; "Invalid AI request" ; /* Added in FM21 */
+		theCode = 883 ; "Invalid request to custom model provider" ; /* Added in FM21 */
+		theCode = 884 ; "Invalid AI request" ; /* Added in FM21 */
+		theCode = 885 ; "Endpoint is invalid or server is unreachable" ; /* Added in FM21 */
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 1200 ;
+
+	theCode < 1200 ;
 	Case (
-		theErrorCode = 900 ;	"General spelling engine error" ;
-		theErrorCode = 901 ;	"Main spelling dictionary not installed" ;
-		theErrorCode = 902 ;	"Could not launch the Help system" ; /* removed in FM15 */
-		theErrorCode = 903 ;	"Command cannot be used in a shared file" ;
-		theErrorCode = 905 ;	"Command requires a field to be active" ;
-		theErrorCode = 906 ;	"Current file is not shared; command can be used only if the file is shared" ;
-		theErrorCode = 920 ;	"Cannot initialize the spelling engine" ;
-		theErrorCode = 921 ;	"User dictionary cannot be loaded for editing" ;
-		theErrorCode = 922 ;	"User dictionary cannot be found" ;
-		theErrorCode = 923 ;	"User dictionary is read-only" ;
-		theErrorCode = 951 ;	"An unexpected error occurred" ; /* WPE or REST API */
-		theErrorCode = 952 ;	"Invalid FileMaker Data API token" ; /* added in FM16, WPE or REST API */
-		theErrorCode = 953 ;	"Exceeded limit on data the FileMaker Data API and OData can transmit" ; /* added in FM16, WPE or REST API */
-		theErrorCode = 954 ;	"Unsupported XML grammar" ; /* WPE or REST API */
-		theErrorCode = 955 ;	"No database name" ; /* WPE or REST API */
-		theErrorCode = 956 ;	"Maximum number of database or Admin API sessions exceeded" ; /* WPE or REST API */
-		theErrorCode = 957 ;	"Conflicting commands" ; /* WPE or REST API */
-		theErrorCode = 958 ;	"Parameter missing" ; /* WPE or REST API */
-		theErrorCode = 959 ;	"Custom Web Publishing technology is disabled" ;
-		theErrorCode = 960 ;	"Parameter is invalid" ; /* added in FM12 */
+		theCode = 900 ;	"General spelling engine error" ;
+		theCode = 901 ;	"Main spelling dictionary not installed" ;
+		theCode = 902 ;	"Could not launch the Help system" ; /* removed in FM15 */
+		theCode = 903 ;	"Command cannot be used in a shared file" ;
+		theCode = 905 ;	"Command requires a field to be active" ;
+		theCode = 906 ;	"Current file is not shared; command can be used only if the file is shared" ;
+		theCode = 920 ;	"Cannot initialize the spelling engine" ;
+		theCode = 921 ;	"User dictionary cannot be loaded for editing" ;
+		theCode = 922 ;	"User dictionary cannot be found" ;
+		theCode = 923 ;	"User dictionary is read-only" ;
+		theCode = 951 ;	"An unexpected error occurred" ; /* WPE or REST API */
+		theCode = 952 ;	"Invalid FileMaker Data API token" ; /* added in FM16, WPE or REST API */
+		theCode = 953 ;	"Exceeded limit on data the FileMaker Data API and OData can transmit" ; /* added in FM16, WPE or REST API */
+		theCode = 954 ;	"Unsupported XML grammar" ; /* WPE or REST API */
+		theCode = 955 ;	"No database name" ; /* WPE or REST API */
+		theCode = 956 ;	"Maximum number of database or Admin API sessions exceeded" ; /* WPE or REST API */
+		theCode = 957 ;	"Conflicting commands" ; /* WPE or REST API */
+		theCode = 958 ;	"Parameter missing" ; /* WPE or REST API */
+		theCode = 959 ;	"Custom Web Publishing technology is disabled" ;
+		theCode = 960 ;	"Parameter is invalid" ; /* added in FM12 */
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 1300 ;
+
+	theCode < 1300 ;
 	Case (
-		theErrorCode = 1200 ;	"Generic calculation error" ;
-		theErrorCode = 1201 ;	"Too few parameters in the function" ;
-		theErrorCode = 1202 ;	"Too many parameters in the function" ;
-		theErrorCode = 1203 ;	"Unexpected end of calculation" ;
-		theErrorCode = 1204 ;	"Number, text constant, field name, or \"(\" expected" ;
-		theErrorCode = 1205 ;	"Comment is not terminated with \"*/\"" ;
-		theErrorCode = 1206 ;	"Text constant must end with a quotation mark" ;
-		theErrorCode = 1207 ;	"Unbalanced parenthesis" ;
-		theErrorCode = 1208 ;	"Operator missing, function not found, or \"(\" not expected" ;
-		theErrorCode = 1209 ;	"Name (such as field name or layout name) is missing" ;
-		theErrorCode = 1210 ;	"Plug-in function or script step has already been registered" ;
-		theErrorCode = 1211 ;	"List usage is not allowed in this function" ;
-		theErrorCode = 1212 ;	"An operator (for example, +, -, *) is expected here" ;
-		theErrorCode = 1213 ;	"This variable has already been defined in the Let function" ;
-		theErrorCode = 1214 ;	"A function parameter contains an expression where a field is required" ;
-		theErrorCode = 1215 ;	"This parameter is an invalid Get function parameter" ;
-		theErrorCode = 1216 ;	"Only summary fields are allowed as first argument in GetSummary" ;
-		theErrorCode = 1217 ;	"Break field is invalid" ;
-		theErrorCode = 1218 ;	"Cannot evaluate the number" ;
-		theErrorCode = 1219 ;	"A field cannot be used in its own formula" ;
-		theErrorCode = 1220 ;	"Field type must be normal or calculated" ;
-		theErrorCode = 1221 ;	"Data type must be number, date, time, or timestamp" ;
-		theErrorCode = 1222 ;	"Calculation cannot be stored" ;
-		theErrorCode = 1223 ;	"Function referred to is not yet implemented" ;
-		theErrorCode = 1224 ;	"Function referred to does not exist" ;
-		theErrorCode = 1225 ;	"Function referred to is not supported in this context" ;
+		theCode = 1200 ;	"Generic calculation error" ;
+		theCode = 1201 ;	"Too few parameters in the function" ;
+		theCode = 1202 ;	"Too many parameters in the function" ;
+		theCode = 1203 ;	"Unexpected end of calculation" ;
+		theCode = 1204 ;	"Number, text constant, field name, or \"(\" expected" ;
+		theCode = 1205 ;	"Comment is not terminated with \"*/\"" ;
+		theCode = 1206 ;	"Text constant must end with a quotation mark" ;
+		theCode = 1207 ;	"Unbalanced parenthesis" ;
+		theCode = 1208 ;	"Operator missing, function not found, or \"(\" not expected" ;
+		theCode = 1209 ;	"Name (such as field name or layout name) is missing" ;
+		theCode = 1210 ;	"Plug-in function or script step has already been registered" ;
+		theCode = 1211 ;	"List usage is not allowed in this function" ;
+		theCode = 1212 ;	"An operator (for example, +, -, *) is expected here" ;
+		theCode = 1213 ;	"This variable has already been defined in the Let function" ;
+		theCode = 1214 ;	"A function parameter contains an expression where a field is required" ;
+		theCode = 1215 ;	"This parameter is an invalid Get function parameter" ;
+		theCode = 1216 ;	"Only summary fields are allowed as first argument in GetSummary" ;
+		theCode = 1217 ;	"Break field is invalid" ;
+		theCode = 1218 ;	"Cannot evaluate the number" ;
+		theCode = 1219 ;	"A field cannot be used in its own formula" ;
+		theCode = 1220 ;	"Field type must be normal or calculated" ;
+		theCode = 1221 ;	"Data type must be number, date, time, or timestamp" ;
+		theCode = 1222 ;	"Calculation cannot be stored" ;
+		theCode = 1223 ;	"Function referred to is not yet implemented" ;
+		theCode = 1224 ;	"Function referred to does not exist" ;
+		theCode = 1225 ;	"Function referred to is not supported in this context" ;
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 1500 ;
+
+	theCode < 1500 ;
 	Case (
-		theErrorCode = 1300 ;	"The specified name can't be used" ;
-		theErrorCode = 1301 ;	"A parameter of the imported or pasted function has the same name as a function in the file" ; /* added in FM13 */
-		theErrorCode = 1400 ;	"ODBC client driver initialization failed; make sure ODBC client drivers are properly installed" ;
-		theErrorCode = 1401 ;	"Failed to allocate environment (ODBC)" ;
-		theErrorCode = 1402 ;	"Failed to free environment (ODBC)" ;
-		theErrorCode = 1403 ;	"Failed to disconnect (ODBC)" ;
-		theErrorCode = 1404 ;	"Failed to allocate connection (ODBC)" ;
-		theErrorCode = 1405 ;	"Failed to free connection (ODBC)" ;
-		theErrorCode = 1406 ;	"Failed check for SQL API (ODBC)" ;
-		theErrorCode = 1407 ;	"Failed to allocate statement (ODBC)" ;
-		theErrorCode = 1408 ;	"Extended error (ODBC)" ;
-		theErrorCode = 1409 ;	"Error (ODBC)" ;
-		theErrorCode = 1413 ;	"Failed communication link (ODBC)" ;
-		theErrorCode = 1414 ;	"SQL statement is too long" ; /* added in FM12 */
-		theErrorCode = 1415 ;	"Connection is being disconnected (ODBC)" ; /* added in FM20 */
-		theErrorCode = 1450 ;	"Action requires PHP privilege extension" ; /* WPE or REST API */
-		theErrorCode = 1451 ;	"Action requires that current file be remote" ;
+		theCode = 1300 ;	"The specified name can't be used" ;
+		theCode = 1301 ;	"A parameter of the imported or pasted function has the same name as a function in the file" ; /* added in FM13 */
+		theCode = 1400 ;	"ODBC client driver initialization failed; make sure ODBC client drivers are properly installed" ;
+		theCode = 1401 ;	"Failed to allocate environment (ODBC)" ;
+		theCode = 1402 ;	"Failed to free environment (ODBC)" ;
+		theCode = 1403 ;	"Failed to disconnect (ODBC)" ;
+		theCode = 1404 ;	"Failed to allocate connection (ODBC)" ;
+		theCode = 1405 ;	"Failed to free connection (ODBC)" ;
+		theCode = 1406 ;	"Failed check for SQL API (ODBC)" ;
+		theCode = 1407 ;	"Failed to allocate statement (ODBC)" ;
+		theCode = 1408 ;	"Extended error (ODBC)" ;
+		theCode = 1409 ;	"Error (ODBC)" ;
+		theCode = 1413 ;	"Failed communication link (ODBC)" ;
+		theCode = 1414 ;	"SQL statement is too long" ; /* added in FM12 */
+		theCode = 1415 ;	"Connection is being disconnected (ODBC)" ; /* added in FM20 */
+		theCode = 1450 ;	"Action requires PHP privilege extension" ; /* WPE or REST API */
+		theCode = 1451 ;	"Action requires that current file be remote" ;
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 1600 ;
+
+	theCode < 1600 ;
 	Case (
-		theErrorCode = 1501 ;	"SMTP authentication failed" ;
-		theErrorCode = 1502 ;	"Connection refused by SMTP server" ;
-		theErrorCode = 1503 ;	"Error with SSL" ;
-		theErrorCode = 1504 ;	"SMTP server requires the connection to be encrypted" ;
-		theErrorCode = 1505 ;	"Specified authentication is not supported by SMTP server" ;
-		theErrorCode = 1506 ;	"Email message(s) could not be sent successfully" ;
-		theErrorCode = 1507 ;	"Unable to log in to the SMTP server" ;
-		theErrorCode = 1550 ;	"Cannot load the plug-in, or the plug-in is not a valid plug-in" ; /* added in FM12 */
-		theErrorCode = 1551 ;	"Cannot install the plug-in; cannot delete an existing plug-in or write to the folder or disk" ; /* added in FM12 */
-		theErrorCode ≥ 1552 and theErrorCode ≤ 1559 ; "Plug-in Error; see the documentation that came with the plug-in" ;  /* added in FM16 */
+		theCode = 1501 ;	"SMTP authentication failed" ;
+		theCode = 1502 ;	"Connection refused by SMTP server" ;
+		theCode = 1503 ;	"Error with SSL" ;
+		theCode = 1504 ;	"SMTP server requires the connection to be encrypted" ;
+		theCode = 1505 ;	"Specified authentication is not supported by SMTP server" ;
+		theCode = 1506 ;	"Email message(s) could not be sent successfully" ;
+		theCode = 1507 ;	"Unable to log in to the SMTP server" ;
+		theCode = 1550 ;	"Cannot load the plug-in, or the plug-in is not a valid plug-in" ; /* added in FM12 */
+		theCode = 1551 ;	"Cannot install the plug-in; cannot delete an existing plug-in or write to the folder or disk" ; /* added in FM12 */
+		theCode ≥ 1552 and theCode ≤ 1559 ; "Plug-in Error; see the documentation that came with the plug-in" ;  /* added in FM16 */
 		"Unknown error code"
 	) ;
-	
-	theErrorCode < 5500 and theErrorCode ≥ 5000 ; /* added in FM20 */
+
+	theCode < 5500 and theCode ≥ 5000 ; /* added in FM20 */
 	/* NOTE: If you use these codes you can add your custom error descriptions here */
 	"Revert Transaction" ;
-	
+
 	/* else */
 	Case (
 		/* 1626-1631 added in FM12 */
-		theErrorCode = 1626 ;	"Protocol is not supported" ;
-		theErrorCode = 1627 ;	"Authentication failed" ;
-		theErrorCode = 1628 ;	"There was an error with SSL" ;
-		theErrorCode = 1629 ;	"Connection timed out; the timeout value is 60 seconds" ;
-		theErrorCode = 1630 ;	"URL format is incorrect" ;
-		theErrorCode = 1631 ;	"Connection failed" ;
-		theErrorCode = 1632 ;	"The certificate has expired" ;  /* added in FM14, major rewording in FM15 */
-		theErrorCode = 1633 ;	"The certificate is self-signed" ; /* added in FM14, major rewording in FM15 */
-		theErrorCode = 1634 ;	"A certificate verification error occurred" ; /* added in FM15 */
-		theErrorCode = 1635 ;	"Connection is unencrypted" ; /* added in FM16 */
-		theErrorCode = 1638 ;	"The host is not allowing new connections. Try again later." ; /* added in FM21 */
+		theCode = 1626 ;	"Protocol is not supported" ;
+		theCode = 1627 ;	"Authentication failed" ;
+		theCode = 1628 ;	"There was an error with SSL" ;
+		theCode = 1629 ;	"Connection timed out; the timeout value is 60 seconds" ;
+		theCode = 1630 ;	"URL format is incorrect" ;
+		theCode = 1631 ;	"Connection failed" ;
+		theCode = 1632 ;	"The certificate has expired" ;  /* added in FM14, major rewording in FM15 */
+		theCode = 1633 ;	"The certificate is self-signed" ; /* added in FM14, major rewording in FM15 */
+		theCode = 1634 ;	"A certificate verification error occurred" ; /* added in FM15 */
+		theCode = 1635 ;	"Connection is unencrypted" ; /* added in FM16 */
+		theCode = 1638 ;	"The host is not allowing new connections. Try again later." ; /* added in FM21 */
 		/* 1700-1711 added in FM18, WPE or REST API */
-		theErrorCode = 1700 ;	"Resource doesn't exist" ;
-		theErrorCode = 1701 ;	"Host is currently unable to receive requests" ;
-		theErrorCode = 1702 ;	"Authentication information wasn't provided in the correct format; verify the value of the Authorization header" ;
-		theErrorCode = 1703 ;	"Invalid username or password, or JSON Web Token" ;
-		theErrorCode = 1704 ;	"Resource doesn't support the specified HTTP verb" ;
-		theErrorCode = 1705 ;	"Required HTTP header wasn't specified" ;
-		theErrorCode = 1706 ;	"Parameter isn't supported" ;
-		theErrorCode = 1707 ;	"Required parameter wasn't specified in the request" ;
-		theErrorCode = 1708 ;	"Parameter value is invalid" ;
-		theErrorCode = 1709 ;	"Operation is invalid for the resource's current status" ;
-		theErrorCode = 1710 ;	"JSON input isn't syntactically valid" ;
-		theErrorCode = 1711 ;	"Host's license has expired" ;
-		theErrorCode = 1712 ;	"Private key file already exists; remove it and run the command again (*)" ; /* added in FM20 */
-		theErrorCode = 1713 ;	"The API request is not supported for this operating system (*)" ; /* added in FM20 */
-		theErrorCode = 1714 ;	"External group name is invalid (*)" ; /* added in FM20 */
-		theErrorCode = 1715 ;	"External server account sign-in is not enabled (*)" ; /* added in FM20 */
+		theCode = 1700 ;	"Resource doesn't exist" ;
+		theCode = 1701 ;	"Host is currently unable to receive requests" ;
+		theCode = 1702 ;	"Authentication information wasn't provided in the correct format; verify the value of the Authorization header" ;
+		theCode = 1703 ;	"Invalid username or password, or JSON Web Token" ;
+		theCode = 1704 ;	"Resource doesn't support the specified HTTP verb" ;
+		theCode = 1705 ;	"Required HTTP header wasn't specified" ;
+		theCode = 1706 ;	"Parameter isn't supported" ;
+		theCode = 1707 ;	"Required parameter wasn't specified in the request" ;
+		theCode = 1708 ;	"Parameter value is invalid" ;
+		theCode = 1709 ;	"Operation is invalid for the resource's current status" ;
+		theCode = 1710 ;	"JSON input isn't syntactically valid" ;
+		theCode = 1711 ;	"Host's license has expired" ;
+		theCode = 1712 ;	"Private key file already exists; remove it and run the command again (*)" ; /* added in FM20 */
+		theCode = 1713 ;	"The API request is not supported for this operating system (*)" ; /* added in FM20 */
+		theCode = 1714 ;	"External group name is invalid (*)" ; /* added in FM20 */
+		theCode = 1715 ;	"External server account sign-in is not enabled (*)" ; /* added in FM20 */
 		"Unknown error code"
 	)
 ) )

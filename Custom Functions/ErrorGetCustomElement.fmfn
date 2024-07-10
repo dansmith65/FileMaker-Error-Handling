@@ -1,0 +1,40 @@
+/**
+ * =====================================
+ * ErrorGetCustomElement ( keyOrPath )
+ *
+ * PURPOSE:
+ *		Get a value from the custom error object stored in a private local variable. This value
+ *		could be set by many of the Error* custom functions, but is likely to be set by Error,
+ *		ErrorIfFmp, ErrorIfApp, or in user code by the ErrorIfSetCustomElement function.
+ *
+ * RETURNS: (any)
+ *		Since the underlying data structure is currently JSON, the return value could be any
+ *		valid JSON type.
+ *
+ * PARAMETERS:
+ *		keyOrPath = (text) the key or path to the JSON element to get
+ *
+ * NOTE:
+ *		Could validate/transform the keyOrPath like ErrorIfSetCustomElement does, but I've chosen
+ *		not to. ErrorIfSetCustomElement has the potential to delete existing data, so it's more
+ *		important to validate the keyOrPath there. It's also more important to be able to save
+ *		the data than it is to retrieve it with this function so nothing is lost (the assumption
+ *		here is that it will be logged).
+ *
+ * DEPENDENCIES:
+ *		ErrorFound, ErrorGetAsJSON
+ *
+ * REFERENCES:
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
+ *
+ * HISTORY:
+ *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
+ *			- created based on code by Joshua Willing josh@willingapps.com
+ * =====================================
+ */
+
+If ( ErrorFound ;
+	JSONGetElement ( ErrorGetAsJSON ; "custom." & keyOrPath )
+)

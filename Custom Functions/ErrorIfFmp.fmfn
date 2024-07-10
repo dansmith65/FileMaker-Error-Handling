@@ -1,0 +1,69 @@
+/**
+ * =====================================
+ * ErrorIfFmp ( theCode ; additionalTextInfo )
+ *
+ * PURPOSE:
+ *		Save error information to a private local variable and return a Boolean result.
+ *		This should only be used for FileMaker-specific error codes. You will most often want
+ *		to use ErrorIfFmpLastError, but this function is necessary when you use EvaluationError,
+ *		which you should be using every time you use Evaluate.
+ *
+ * RETURNS: (boolean)
+ *		GetAsBoolean ( theCode )
+ *
+ * PARAMETERS:
+ *		theCode = (number) code for a FileMaker error, which is also used as the condition
+ *		additionalTextInfo = (text, optional) some text describing the particular instance of this error.
+ *			With the addition of Get(LastErrorLocation) in FM 19.6.1, this parameter no longer
+ *			has to help a developer locate where in a script the error occurred.
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: ErrorIf, ErrorDescriptionFmp, ErrorIfSetCustomElement
+ *
+ * REFERENCES:
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
+ *
+ * HISTORY:
+ *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
+ *			- created based on various old iterations of the same basic function
+ * =====================================
+ */
+
+If ( not theCode ; ErrorIfSetFromJSON ( "" ) ; Let ( [
+	~errorMessage = ErrorDescriptionFmp ( theCode )
+		& If ( not IsEmpty ( additionalTextInfo ) ;
+			". " & additionalTextInfo
+		)
+		& If ( not IsEmpty ( Get ( LastErrorDetail ) ) ;
+			/* I'm not sure if this should always be included or only for certain error codes;
+				I've seen it return helpful information for 1630 and 1631 codes */
+			If ( not IsEmpty ( additionalTextInfo ) ; ". " )
+			& Get ( LastErrorDetail )
+		)
+		& "."
+] ;
+	ErrorIf ( True ; "Fmp" ; theCode ; ~errorMessage )
+	and ErrorIfSetCustomElement ( "lastErrorLocation" ; Get ( LastErrorLocation ) ; JSONString )
+	and ErrorIfSetCustomElement ( "lastErrorDetail" ; Get ( LastErrorDetail ) ; JSONString )
+	/* add additional info useful for debugging specific errors... */
+	and Case (
+		theCode = 3 ;
+		/* Command is unavailable (for example, wrong operating system, wrong mode, etc.) */
+			ErrorIfSetCustomElement ( "windowMode" ; Get ( WindowMode ) ; JSONString )
+			and ErrorIfSetCustomElement ( "systemPlatform" ; Get ( SystemPlatform ) ; JSONString )
+			and ErrorIfSetCustomElement ( "applicationVersion" ; Get ( ApplicationVersion ) ;JSONString )
+			and ErrorIfSetCustomElement ( "hostApplicationVersion" ; Get ( HostApplicationVersion ) ; JSONString )
+		;
+
+		theCode = 9 /* Insufficient privileges */
+			or Int ( theCode / 100 ) = 2 /* 2xx are permissions related errors*/
+		;
+			ErrorIfSetCustomElement ( "accountPrivilegeSetName" ; Get ( AccountPrivilegeSetName ) ; JSONString )
+			and ErrorIfSetCustomElement ( "currentPrivilegeSetName" ; Get ( CurrentPrivilegeSetName ) ; JSONString )
+		;
+		/* else: nothing more to add, so return true to not break the logic */
+			True
+	)
+) )

@@ -1,0 +1,31 @@
+/**
+ * =====================================
+ * ErrorIfFmpLastError ( additionalTextInfo )
+ *
+ * PURPOSE:
+ *		Save error information to a private local variable and return a Boolean result.
+ *		Syntactic sugar for the most common way to check for FileMaker errors.
+ *
+ * RETURNS: (boolean)
+ *		GetAsBoolean ( Get ( LastError ) )
+ *
+ * PARAMETERS:
+ *		additionalTextInfo = (text, optional) some text describing the particular instance of this error.
+ *			With the addition of Get(LastErrorLocation) in FM 19.6.1, this parameter no longer has
+ *			to help a developer locate where in a script the error occurred.
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: ErrorIfFmp
+ *
+ * REFERENCES:
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
+ *
+ * HISTORY:
+ *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
+ *			- created
+ * =====================================
+ */
+
+ErrorIfFmp ( Get ( LastError ) ; additionalTextInfo )

@@ -1,0 +1,62 @@
+/**
+ * =====================================
+ * ErrorIfScriptResult ( theScriptName )
+ *
+ * PURPOSE:
+ *		Check for all errors after performing a script that should return JSON with error
+ *		information in a key named "error".
+ *
+ * RETURNS: (boolean)
+ *		True for error, otherwise False
+ *
+ * PARAMETERS:
+ *		theScriptName = (text, optional) name of the script just performed
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: ErrorIfFmpLastError, ErrorIfApp, ErrorIfSetFromJSON,
+ *			ErrorIfSetCustomElement, ErrorGetCustomElement
+ *
+ * REFERENCES:
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
+ *
+ * HISTORY:
+ *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
+ *			- created based on various old iterations of the same basic function
+ * =====================================
+ */
+
+Case (
+	ErrorIfFmpLastError (
+		"after perform script"
+		& If ( IsEmpty ( theScriptName ) ; " step" ;
+			": " & theScriptName
+		)
+	) ;
+	True ;
+
+	/* Confirm that the script result is JSON */
+	ErrorIfApp ( Left ( JSONFormatElements ( Get ( ScriptResult ) ) ; 1 ) = "?" ;
+		19 ;
+		theScriptName
+	) ;
+	True ;
+
+	/* Check for an error in the script result */
+	ErrorIfSetFromJSON ( JSONGetElement ( Get ( ScriptResult ) ; "error" ) ) ;
+	ErrorIfSetCustomElement ( "script.stack" ; List (
+		Get ( ScriptName ) ;
+		Let ( ~scriptStack = ErrorGetCustomElement ( "script.stack") ;
+			If ( IsEmpty ( ~scriptStack ) ;
+				/* start the stack with the script that generated the error */
+				ErrorGetCustomElement ( "script.name" ) ;
+				/* else: append previous stack */
+				~scriptStack
+			)
+		)
+	) ; JSONString ) ;
+
+	/* Else: No error */
+	False
+)

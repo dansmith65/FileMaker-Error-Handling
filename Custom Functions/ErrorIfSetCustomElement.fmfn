@@ -1,0 +1,82 @@
+/**
+ * =====================================
+ * ErrorIfSetCustomElement ( keyOrPath ; value ; jsonType )
+ *
+ * PURPOSE:
+ *		Set a custom value in the error object stored in a private local variable.
+ *
+ *
+ * RETURNS: (boolean)
+ *		True if an error was stored, which also means it added data to the error.
+ *		False if an error was NOT stored, wich also means it did NOT add data to the error.
+ *
+ * PARAMETERS:
+ *		keyOrPath = (text) the key or path to the JSON element to get
+ *			SHOULD NOT start with "_invalidKeys",
+ *			which is a reserved key where values with invalid keys are stored.
+ *		value = the value to set
+ *		jsonType = should be one of the valid types like JSONString
+ *
+ * NOTE:
+ *		It is recommended to document values that are commonly set by this function in your
+ *		system. For example, I use these values:
+ *			dialog.title = (string) If set, will override the default custom dialog title.
+ *			dialog.message = (string) If set, will override the default custom dialog message.
+ *			dialog.shown = (boolean) If true, dialog has been shown to the user.
+ *			logLevel = (int) If set, this log level will be used instead of the default.
+ *
+ * DEPENDENCIES:
+ *		ErrorFound, ErrorGetAsJSON, ErrorIfSetFromJSON
+ *
+ * REFERENCES:
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
+ *
+ * HISTORY:
+ *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
+ *			- created based on code by Joshua Willing josh@willingapps.com
+ * =====================================
+ */
+
+If ( not ErrorFound ; False ;
+	Let ( [
+		~keyOrPathIsInvalid =
+			IsEmpty ( keyOrPath )
+			/* Array's are not supported at the root level. */
+			or (
+				Position ( keyOrPath ; "[" ; 1 ; 1 ) = 1
+				and
+				Position ( keyOrPath ; "['" ; 1 ; 1 ) ≠ 1
+			)
+			/* Chose not to support new array syntax, which helps with backwards compatibility
+			   and will hopefully make it easier to transition the underlying data structure,
+			   in case that ever needs to be done. */
+			or PatternCount ( keyOrPath ; "[:]" )
+			or PatternCount ( keyOrPath ; "[+]" )
+			/* Bracket notation could also be more difficult to transition to a new data structure. */
+			or PatternCount ( keyOrPath ; "['" )
+		;
+		~invalidKeyCount = If ( ~keyOrPathIsInvalid ;
+			ValueCount ( JSONListKeys ( ErrorGetAsJSON ; "custom._invalidKeys" ) )
+		) ;
+		~ = If ( ~keyOrPathIsInvalid ;
+			/* save keyOrPath in _invalidKeys */
+			ErrorIfSetFromJSON (
+				JSONSetElement ( ErrorGetAsJSON ;
+					"custom._invalidKeys[" & ~invalidKeyCount & "]keyOrPath" ;
+					keyOrPath ;
+					JSONString
+				)
+			)
+		) ;
+		~modifiedKeyOrPath = If ( ~keyOrPathIsInvalid ;
+			"_invalidKeys[" & ~invalidKeyCount & "]value" ;
+			keyOrPath
+		)
+	] ;
+		ErrorIfSetFromJSON (
+			JSONSetElement ( ErrorGetAsJSON ; "custom." & ~modifiedKeyOrPath ; value ; jsonType )
+		)
+	)
+)

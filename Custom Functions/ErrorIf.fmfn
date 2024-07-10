@@ -1,0 +1,74 @@
+/**
+ * =====================================
+ * ErrorIf ( theCondition ; theType ; theCode ; theMessage )
+ *
+ * PURPOSE:
+ *		Save error information to a private local variable, for use by the suite of Error*
+ *		functions. This should be the only function in the suite to create the error, but
+ *		other functions can call it to create an error with a specific type. User code can
+ *		also call this function to create an error with a custom type.
+ *
+ * RETURNS: (boolean)
+ *		If GetAsBoolean ( theCondition ), then return GetAsBoolean ( theCode )
+ *
+ * PARAMETERS:
+ *		theCondition = (boolean) Error will only be stored if True.
+ *		theType = (text) origin of the error
+ *			(e.g.: "Fmp", "App", "Plugin: BaseElements", "Module: PluginChecker", "API: QBO", etc.)
+ *		theCode = (number) code for the error
+ *		theMessage = (text) description of the error, preferably human readable, decipherable,
+ *			and in sentence format (ending with a period).
+ *
+ * NOTE:
+ *		This function contains a recommended set of environmental data, but you may choose to add
+ *		or remove from this function as you see fit for your solution. All error generating custom
+ *		functions call this function, so it is the central place to define default environmental
+ *		data collected when an error occurs, as long as it applies to all error types.
+ *
+ *		Environmental data that is likely to change from the time the error occurs to the time log
+ *		data is collected should be included in this function.
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: ErrorGetAsJSON, ErrorIfSetFromJSON
+ *
+ * REFERENCES:
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
+ *
+ * HISTORY:
+ *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
+ *			- created based on various old iterations of the same basic function
+ * =====================================
+ */
+
+If ( not theCondition ; ErrorIfSetFromJSON ( "" ) ;
+	ErrorIfSetFromJSON ( JSONSetElement ( "{}" ;
+		/**
+		 * Information about the error.
+		 * This code should NOT be modified, these values should be considered "internal" and only
+		 * set by this function and retrieved by specific "getter" functions.
+		 */
+		[ "type" ; theType ; JSONString ] ;
+		[ "code" ; theCode ; JSONNumber ] ;
+		[ "message" ; theMessage ; JSONString ] ;
+
+		/**
+		 * Information about the environment.
+		 * These values should be adjusted as needed for your system and can be accessed by
+		 * case-sensitive name via the ErrorGetCustomElement function. Technically, they should
+		 * also be set by the function named ErrorIfSetCustomElement, so any code below should be
+		 * compatible with those setter/getter functions.
+		 * It's recommended to use lowerCamelCase for custom info, for consistency.
+		 */
+		[ "custom.script.name" ; Get ( ScriptName ) ; JSONString ] ;
+		[ "custom.script.parameter" ; Get ( ScriptParameter ) ;
+			If ( Left ( JSONFormatElements ( Get ( ScriptParameter ) ) ; 1 ) = "{" ; JSONObject ; JSONString )
+		] ;
+		[ "custom.script.result" ; Get ( ScriptResult ) ;
+			If ( Left ( JSONFormatElements ( Get ( ScriptResult ) ) ; 1 ) = "{" ; JSONObject ; JSONString )
+		] ;
+		[ "custom.script.section" ; $~script.section ; JSONString ] ;
+		[ "custom.currentTimeUTCMilliseconds" ; Get ( CurrentTimeUTCMilliseconds ) ; JSONNumber  ]
+	) )
+)

@@ -1,0 +1,100 @@
+/**
+ * =====================================
+ * ErrorIfApp ( theCondition ; theCode ; additionalTextInfo )
+ *
+ * PURPOSE:
+ *		Save error information to a private local variable and return a Boolean result.
+ *		This should only be used for Application-specific error codes, as defined by YOU!
+ *		Daniel Smith has added the codes he uses, but you should feel free to add or modify
+ *		these codes to suit your needs. Make sure you don't change any codes after you start
+ *		using this function in your application, though!
+ *
+ * RETURNS: (boolean)
+ *		GetAsBoolean ( theCondition )
+ *
+ * PARAMETERS:
+ *		theCondition = (boolean) Error will only be stored if True.
+ *		theCode = (number) code for the error
+ *		additionalTextInfo = (text, optional) some text describing the particular instance of this error.
+ *			This should help a developer locate where in a script the error occurred.
+ *			(e.g., "create new invoice record")
+ *
+ * DEPENDENCIES:
+ *		Custom Functions: ErrorIf, ErrorIfSetCustomElement
+ *
+ * REFERENCES:
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
+ *
+ * HISTORY:
+ *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
+ *			- created based on various old iterations of the same basic function
+ *			- some of those iterations by Joshua Willing josh@willingapps.com
+ * =====================================
+ */
+
+If ( not theCondition ; ErrorIfSetFromJSON ( "" ) ; Let ( [
+	/* Get human-readable error string associated with the code */
+	~errorDescription = Case (
+		theCode = 0 ;  	"No error" ;
+
+		theCode = 1 ;  	"User canceled action" ;
+
+		theCode = 2 ;  	"Invalid parameter" ;
+			/* Missing or malformed; so if a date is expected but script received a turtle. */
+
+		theCode = 3 ;  	"Failed validation" ;
+			/* Any general-purpose validation that doesn't fit into another more-specific error code. */
+
+		theCode = 6 ;  	"Invalid window mode" ;
+
+		theCode = 10 ; 	"Incompatible FileMaker version" ;
+			/* Sometimes we offer a feature or two that doesn't run on the lowest supported client version.
+			   In that case, this error could be used to only allow supported clients to run the code. */
+
+		theCode = 11 ; 	"Incompatible FileMaker application" ;
+			/* Might use if FMGo is required for a GPS location based function, but the
+			   feature was run from FMPro. */
+
+		theCode = 13 ; 	"Script error" ;
+			/* I often wonder if I should use this code, or Failed Validation code 3. I think there are
+			   subtle differences, though. Let's say a script set a variable to the value of "a", "b" or "c",
+			   then later tested which value it was. I would throw this code in an `Else` since the same
+			   script set the variable, so there is just some internal error that isn't because of a
+			   parameter. It might be able to be called validation error, but the script itself is what was
+			   invalid, so I use this code.*/
+
+		theCode = 16 ; 	"Plug-In error" ;
+			/* Use when a plugin doesn't have a specific error handling function
+			   (which set's the type to the plugin name) */
+
+		theCode = 17 ; 	"ExecuteSQL error" ;
+
+		theCode = 19 ; 	"Invalid script result" ;
+			/* Set by ErrorIfScriptResult function. It's like code 2, but for script results.
+			   You could also use it when translating a module's result and that process fails. */
+
+		theCode = 20 ;  "Pardon our dust. This feature is not yet available." ;
+
+		"Unknown error code"
+	) ;
+	~errorMessage = ~errorDescription
+		& If ( not IsEmpty ( additionalTextInfo ) ;
+			"; " & additionalTextInfo
+		)
+		& "."
+] ;
+	ErrorIf ( True ; "App" ; theCode ; ~errorMessage )
+	/* add additional info useful for debugging specific errors... */
+	&  Case (
+		theCode = 6 ;
+			ErrorIfSetCustomElement ( "windowMode" ; Get ( WindowMode ) ; JSONString ) ;
+
+		theCode = 10 or theCode = 11 ;
+			ErrorIfSetCustomElement ( "applicationVersion" ; Get ( ApplicationVersion ) ; JSONString ) ;
+
+		theCode = 18 ;
+			ErrorIfSetCustomElement ( "foundCount" ; Get ( FoundCount ) ; JSONString )
+	)
+) )

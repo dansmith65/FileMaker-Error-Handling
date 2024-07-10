@@ -1,0 +1,28 @@
+/**
+ * =====================================
+ * ErrorGetAsJSON
+ *
+ * PURPOSE:
+ *		Allows for returning an error in a script result or logging it, for example.
+ *
+ * RETURNS: (JSON Object)
+ *		Entire error serialized as a JSON object.
+ *
+ * PARAMETERS: none
+ *
+ * DEPENDENCIES: none
+ *
+ * REFERENCES:
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
+ *
+ * HISTORY:
+ *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
+ *			- created with advice from Joshua Willing josh@willingapps.com
+ * =====================================
+ */
+
+If ( IsEmpty ( $errorPrivate ) ; "{}" ;
+	$errorPrivate
+)

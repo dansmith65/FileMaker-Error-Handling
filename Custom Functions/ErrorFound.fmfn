@@ -1,25 +1,38 @@
 /**
  * =====================================
- * ErrorFound ( theErrorData )
+ * ErrorFound
  *
- * RETURNS:
- *		ErrorCode contained in theErrorData as a Boolean. In other words, if any error occurred at
- *		all, return True (1), otherwise return False (0).
+ * RETURNS: (boolean)
+ *		True if the private local variable contained an error, otherwise False
  *
- * PARAMETERS:
- *		theErrorData | (let notation) output of Error custom function
+ * DEPENDENCIES:
+ *		ErrorGetAsJSON, ErrorIf, ErrorIfSetCustomElement
  *
  * REFERENCES:
- *		https://github.com/dansmith65/FileMaker-Error-Handling
+ *		Full documentation can be found at https://github.com/dansmith65/FileMaker-Error-Handling.
+ *		Either [the entire license](https://github.com/dansmith65/FileMaker-Error-Handling/blob/master/LICENSE)
+ *		or this sentence shall be included in all copies or substantial portions of the Software.
  *
  * HISTORY:
- *		2024-APR-12 Daniel Smith dan@filemaker.consulting
+ *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
  *			- created based on various old iterations of the same basic function
  * =====================================
  */
 
-not IsEmpty ( theErrorData )
-and theErrorData ≠ "{}"
-and GetAsBoolean (
-	JSONGetElement ( theErrorData ; "errorCode" )
+Case (
+	ErrorGetAsJSON = "{}" ;
+		False
+	;
+
+	Left ( ErrorGetAsJSON ; 1 ) ≠ "{" or Right ( ErrorGetAsJSON ; 1 ) ≠ "}" ;
+		/* DO NOT want to use JSONFormatElements here since this is called by other functions
+		   which get called often so should not alter FileMaker's internal JSON cache unless
+		   an error found. */
+		ErrorIf ( True ; "CF: ErrorFound" ; 2 ; "the stored error was not a valid JSON object" )
+		and ErrorIfSetCustomElement ( "theErrorObject" ; ErrorGetAsJSON ; JSONString )
+	;
+
+	GetAsBoolean (
+		JSONGetElement ( ErrorGetAsJSON ; "code" )
+	)
 )
