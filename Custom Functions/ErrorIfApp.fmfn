@@ -28,6 +28,8 @@
  *		or this sentence shall be included in all copies or substantial portions of the Software.
  *
  * HISTORY:
+ *		2024-JUL-11 Daniel Smith
+ *			- trim additionalTextInfo, use a period separator instead of semicolon, omit trailing period
  *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
  *			- created based on various old iterations of the same basic function
  *			- some of those iterations by Joshua Willing josh@willingapps.com
@@ -75,15 +77,14 @@ If ( not theCondition ; ErrorIfSetFromJSON ( "" ) ; Let ( [
 			/* Set by ErrorIfScriptResult function. It's like code 2, but for script results.
 			   You could also use it when translating a module's result and that process fails. */
 
-		theCode = 20 ;  "Pardon our dust. This feature is not yet available." ;
+		theCode = 20 ;  "Pardon our dust; this feature is not yet available" ;
 
 		"Unknown error code"
 	) ;
 	~errorMessage = ~errorDescription
-		& If ( not IsEmpty ( additionalTextInfo ) ;
-			"; " & additionalTextInfo
+		& If ( not IsEmpty ( Trim ( additionalTextInfo ) ) ;
+			". " & Trim ( additionalTextInfo )
 		)
-		& "."
 ] ;
 	ErrorIf ( True ; "App" ; theCode ; ~errorMessage )
 	/* add additional info useful for debugging specific errors... */

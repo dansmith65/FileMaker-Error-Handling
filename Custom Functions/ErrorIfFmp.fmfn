@@ -26,23 +26,25 @@
  *		or this sentence shall be included in all copies or substantial portions of the Software.
  *
  * HISTORY:
+ *		2024-JUL-11 Daniel Smith
+ *			- trim additionalTextInfo, omit trailing period
  *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
  *			- created based on various old iterations of the same basic function
  * =====================================
  */
 
 If ( not theCode ; ErrorIfSetFromJSON ( "" ) ; Let ( [
+	~additionalText = Trim ( additionalTextInfo ) ;
 	~errorMessage = ErrorDescriptionFmp ( theCode )
-		& If ( not IsEmpty ( additionalTextInfo ) ;
-			". " & additionalTextInfo
+		& If ( not IsEmpty ( ~additionalText ) ;
+			". " & ~additionalText
 		)
 		& If ( not IsEmpty ( Get ( LastErrorDetail ) ) ;
 			/* I'm not sure if this should always be included or only for certain error codes;
 				I've seen it return helpful information for 1630 and 1631 codes */
-			If ( not IsEmpty ( additionalTextInfo ) ; ". " )
+			If ( not IsEmpty ( ~additionalText ) ; ". " )
 			& Get ( LastErrorDetail )
 		)
-		& "."
 ] ;
 	ErrorIf ( True ; "Fmp" ; theCode ; ~errorMessage )
 	and ErrorIfSetCustomElement ( "lastErrorLocation" ; Get ( LastErrorLocation ) ; JSONString )

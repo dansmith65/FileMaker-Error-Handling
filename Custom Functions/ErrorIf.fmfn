@@ -37,6 +37,8 @@
  *		or this sentence shall be included in all copies or substantial portions of the Software.
  *
  * HISTORY:
+ *		2024-JUL-11 Daniel Smith
+ *			- trim theMessage and append a period if it doesn't end with one already
  *		2024-JUL-08 Daniel Smith dan@filemaker.consulting
  *			- created based on various old iterations of the same basic function
  * =====================================
@@ -51,7 +53,11 @@ If ( not theCondition ; ErrorIfSetFromJSON ( "" ) ;
 		 */
 		[ "type" ; theType ; JSONString ] ;
 		[ "code" ; theCode ; JSONNumber ] ;
-		[ "message" ; theMessage ; JSONString ] ;
+		[ "message" ;
+			Let ( msg = Trim ( theMessage ) ;
+				msg & If ( Right ( msg ; 1 ) ≠ "." ; "." )
+			)
+		; JSONString ] ;
 
 		/**
 		 * Information about the environment.
