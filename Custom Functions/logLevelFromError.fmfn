@@ -1,0 +1,72 @@
+/**
+ * =====================================
+ * logLevelFromError
+ *
+ * PURPOSE:
+ *		Convert an error into the default log level for that error.
+ *
+ * RETURNS:
+ *		(number) log level
+ *
+ * NOTES:
+ *		 It's probably not appropriate to use this function to specify the log level for every
+ *		 error, but it is useful for mapping common errors to common log levels.
+ *
+ *		 If logLevel is specified in the error data, then use that.
+ *
+ * REFERENCES:
+ *		https://github.com/dansmith65/FileMaker-Error-Handling
+ *		https://github.com/dansmith65/FileMaker-Logger
+ *
+ * HISTORY:
+ *		2024-JUL-22 Daniel Smith dan@filemaker.consulting
+ *			- created based on various old iterations of the same basic function
+ *			- some of those iterations by Joshua Willing josh@willingapps.com
+ * =====================================
+ */
+
+Let ( [
+	~errorType = ErrorGetType ;
+	~errorCode = ErrorGetCode ;
+	~logLevel = ErrorGetCustomElement ( "logLevel" )
+] ;
+	Case (
+		not IsEmpty ( ~logLevel ) and ~logLevel >= 0 and ~logLevel <= 5 ;
+			~logLevel ;
+
+		~errorCode = 0 ;
+			5 ;
+
+		// APP
+		~errorType = "App" ;
+			Case (
+				~errorCode = 1 ;	4 ;	// User canceled action
+				// default
+				2
+			) ;
+
+		// FMP
+		~errorType = "Fmp" ;
+			Case (
+				~errorCode = 1 ;	4 ;	// User canceled action
+				~errorCode = 9 ;	2 ;	// Insufficient privileges
+				~errorCode = 20 ;	4 ;	// Command/operation canceled by triggered script
+				~errorCode ≥ 200 and ~errorCode <= 213 ;	2 ;	// misc. permissions errors
+				~errorCode ≥ 215 and ~errorCode <= 218 ;	2 ;	// misc. permissions errors
+				~errorCode ≥ 300 and ~errorCode <= 304 ;	3 ;	// in use by others
+				~errorCode = 400 ;	3 ;	// Find criteria are empty
+				~errorCode = 401 ;	3 ;	// No records match the request
+				~errorCode ≥ 500 and ~errorCode <= 509 ;	3 ;	// validation
+				~errorCode = 805 ;	1 ;	// File is damaged; use Recover command
+				~errorCode ≥ 807 and ~errorCode <= 810 ;	1 ;	// file/file system errors
+				~errorCode = 812 ;	1 ;	// Exceeded host's capacity
+				~errorCode = 813 ;	1 ;	// Record Synchronization error on network
+				~errorCode = 824 ;	1 ;	// File is damaged or not a FileMaker file
+				// default
+				2
+			) ;
+
+		// ALL OTHER
+			2
+	)
+)
